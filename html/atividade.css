@@ -1,0 +1,68 @@
+body {
+  margin: 20px;
+  display: flex;
+  justify-content: center; /* Centraliza a calculadora na tela */
+  background-color: #f0f0f0;
+}
+
+.calculadora {
+  width: 310px;
+  border: 2px solid black;
+  padding: 15px;
+  background-color: rgb(54, 54, 54);
+  color: rgb(172, 255, 172);
+  border-radius: 12px;
+  box-shadow: 0px 10px 20px rgba(0,0,0,0.3);
+}
+
+#resultado {
+    font-size: 25px;
+    padding: -37px;
+    margin-bottom: 30px;
+    text-align: right;
+    background-color: black;
+    border: 2px solid #bdffbd;
+    min-height: 80px;
+    color: #a5ffa5;
+    border-radius: 17px;
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.botoes {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 colunas iguais */
+  gap: 8px;
+}
+
+/* Estilo geral para todos os botões */
+button {
+  padding: 20px;
+  background-color: rgb(255, 145, 0);
+  color: black;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  border: none;
+  border-radius: 7px;
+  transition: 0.2s;
+}
+
+button:hover {
+  background-color: #b86500;
+}
+
+button:active {
+  background-color: #a05800;
+ 
+}
+
+/* Estilo específico para o botão zero */
+.zero {
+  background-color: rgb(155, 155, 155);
+  grid-column: span 2; /* Ocupa duas colunas */
+}
+
+.zero:hover {
+  background-color: #dddddd;
+}
+
