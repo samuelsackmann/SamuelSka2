@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8" />
+
+  <link rel="stylesheet" href="jogo.css" />
+
+  <title>Batalha RPG</title>
+
+</head>
+
+<body>
+
+<!-- ⚡ FLASH ANIME -->
+<div id="flash"></div>
+
+<button id="resetarBatalha">
+  Resetar Batalha 
+</button>
+
+  <div class="arena">
+
+    <!-- MAGO -->
+
+    <div class="personagem" id="cardMago">
+
+      <div id="mago">
+        Mago
+      </div>
+
+      <img
+        id="imgjogadorum"
+        src=""
+        class="img-personagem"
+        alt="Mago"
+      />
+
+      <div class="bordaVida">
+
+        <div id="vida1" class="vida"></div>
+
+        <div class="textoHP">
+
+          <span id="hp1">
+            85
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="forca1">
+        Força: 46
+      </div>
+
+      <div class="tituloBarra">
+        Mana 🔮
+      </div>
+
+      <div class="bordaMana">
+
+        <div id="manaMago" class="mana"></div>
+
+        <div class="textoMana">
+
+          <span id="manaTexto">
+            0/100
+          </span>
+
+        </div>
+
+      </div>
+
+      <div id="acoesMago" class="acoes">
+
+        <button onclick="ataqueMago(0)">
+          Bola de Fogo 🔥
+        </button>
+
+        <button onclick="ataqueMago(1)">
+          Macumba ⚡
+        </button>
+
+        <button onclick="ataqueMago(2)">
+          Guaraviton 🧪
+        </button>
+
+        <button
+          id="ultiMago"
+          onclick="ataqueMago(3)"
+          disabled
+        >
+          Meteoro ☄️
+        </button>
+
+      </div>
+
+    </div>
+
+    <div class="vs">
+      VS
+    </div>
+
+    <!-- BARDO -->
+
+    <div class="personagem" id="cardBardo">
+
+      <div id="Bardo">
+        Bardo
+      </div>
+
+      <img
+        id="imgjogadordois"
+        src=""
+        class="img-personagem"
+        alt="Bardo"
+      />
+
+      <div class="bordaVida">
+
+        <div id="vida2" class="vida"></div>
+
+        <div class="textoHP">
+
+          <span id="hp2">
+            100
+          </span>
+
+        </div>
+
+      </div>
+
+      <div class="forca2">
+        Força: 40
+      </div>
+
+      <div class="tituloBarra">
+        Álcool 🍺
+      </div>
+
+      <div class="bordaAlcool">
+
+        <div id="alcoolBardo" class="alcool"></div>
+
+        <div class="textoAlcool">
+
+          <span id="alcoolTexto">
+            0/100
+          </span>
+
+        </div>
+
+      </div>
+
+      <div id="acoesBardo" class="acoes">
+
+        <button onclick="ataqueBardo(0)">
+          Grito Rock 🎸
+        </button>
+
+        <button onclick="ataqueBardo(1)">
+          Cachaça 🍺
+        </button>
+
+        <button onclick="ataqueBardo(2)">
+          Arrocha 🔊
+        </button>
+
+        <button
+          id="ultiBardo"
+          onclick="ataqueBardo(3)"
+          disabled
+        >
+          Solo Supremo 🔥
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <div id="console">
+
+    <p>
+      Log da batalha aparecerá aqui...
+    </p>
+
+  </div>
+
+  <script type="module" src="jogo.js"></script>
+
+</body>
+
+</html>

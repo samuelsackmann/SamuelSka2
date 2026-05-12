@@ -1,0 +1,779 @@
+/* ======================================
+   RESET
+====================================== */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ======================================
+   FUNDO
+====================================== */
+
+body {
+
+  min-height: 100vh;
+
+  font-family: Arial, sans-serif;
+
+  color: white;
+
+  background:
+  radial-gradient(
+    circle at center,
+    #282230 0%,
+    #00002b 100%
+  );
+
+  animation:
+  fundoAnimado 5s infinite alternate;
+
+}
+
+/* ======================================
+   ANIMAÇÃO FUNDO
+====================================== */
+
+@keyframes fundoAnimado {
+
+  from {
+
+    background:
+    radial-gradient(
+      circle at center,
+      #222230 0%,
+      #0d0d12 100%
+    );
+
+  }
+
+  to {
+
+    background:
+    radial-gradient(
+      circle at center,
+      #2b1b35 0%,
+      #09090f 100%
+    );
+
+  }
+
+}
+
+/* ======================================
+   BOTÕES
+====================================== */
+
+button {
+
+  background:
+  linear-gradient(
+    45deg,
+    #ffee00,
+    #ff008c
+  );
+
+  color: white;
+
+  padding: 15px 100px;
+
+  border: none;
+
+  border-radius: 50px;
+
+  font-size: 28px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+
+  display: block;
+
+  margin: 40px auto;
+
+  transition: 0.3s;
+
+  box-shadow:
+  0 0 20px
+  rgba(255, 0, 85, 0.5);
+
+}
+
+button:hover {
+
+  transform: scale(1.05);
+
+  box-shadow:
+  0 0 7px
+  rgb(123, 255, 0);
+
+}
+
+button:active {
+
+  transform: scale(0.90);
+
+}
+
+button:disabled {
+
+  opacity: 0.5;
+
+  cursor: not-allowed;
+
+  filter: grayscale(100%);
+
+}
+
+/* ======================================
+   ARENA
+====================================== */
+
+.arena {
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 60px;
+
+}
+
+/* ======================================
+   PERSONAGEM
+====================================== */
+
+.personagem {
+
+  width: 260px;
+
+  padding: 20px;
+
+  border-radius: 20px;
+
+  text-align: center;
+
+  background:
+  rgba(30, 30, 46, 0.8);
+
+  backdrop-filter: blur(10px);
+
+  box-shadow:
+  0 0 25px
+  rgba(0, 0, 0, 0.7);
+
+  transition: 0.3s;
+
+}
+
+.personagem:hover {
+
+  transform: translateY(-8px);
+
+  box-shadow:
+  0 0 25px
+  rgba(0, 255, 179, 0.7);
+
+}
+
+/* ======================================
+   NOME PERSONAGEM
+====================================== */
+
+#mago,
+#Bardo {
+
+  font-size: 28px;
+
+  font-weight: bold;
+
+  margin-bottom: 15px;
+
+  text-transform: uppercase;
+
+  letter-spacing: 2px;
+
+}
+
+/* ======================================
+   IMAGEM PERSONAGEM
+====================================== */
+
+.img-personagem {
+
+  width: 100%;
+
+  height: 180px;
+
+  object-fit: cover;
+
+  border-radius: 12px;
+
+  border: 3px solid #2b0031;
+
+  margin-bottom: 15px;
+
+  transition: 0.2s;
+
+}
+
+/* ======================================
+   EFEITO DE DANO
+====================================== */
+
+@keyframes tomarDano {
+
+  0% {
+
+    filter:
+    drop-shadow(
+      0px 0px 0px red
+    );
+
+  }
+
+  30% {
+
+    filter:
+    drop-shadow(
+      0px 0px 15px red
+    )
+    drop-shadow(
+      -6px 0px 0px red
+    )
+    drop-shadow(
+      5px 3px 0px red
+    );
+
+  }
+
+  60% {
+
+    filter:
+    brightness(4);
+
+  }
+
+  100% {
+
+    filter:
+    brightness(1);
+
+  }
+
+}
+
+.hit {
+
+  animation:
+  tomarDano 0.3s;
+
+}
+
+/* ======================================
+   VS
+====================================== */
+
+.vs {
+
+  font-size: 70px;
+
+  font-weight: bold;
+
+  color: #ff3366;
+
+  text-shadow:
+  0 0 55px red;
+
+  animation:
+  pulseVS 1s infinite alternate;
+
+}
+
+@keyframes pulseVS {
+
+  from {
+
+    transform: scale(1);
+
+  }
+
+  to {
+
+    transform: scale(1.15);
+
+  }
+
+}
+
+/* ======================================
+   BARRAS
+====================================== */
+
+.bordaVida,
+.bordaMana,
+.bordaAlcool {
+
+  width: 100%;
+
+  background: #111;
+
+  border-radius: 10px;
+
+  overflow: hidden;
+
+  position: relative;
+
+  border: 2px solid #333;
+
+  margin-bottom: 10px;
+
+}
+
+.bordaVida {
+
+  height: 28px;
+
+}
+
+.bordaMana,
+.bordaAlcool {
+
+  height: 22px;
+
+}
+
+/* ======================================
+   VIDA
+====================================== */
+
+.vida {
+
+  width: 100%;
+
+  height: 100%;
+
+  background:
+  linear-gradient(
+    90deg,
+    #00ff88,
+    #00b35f
+  );
+
+  transition: width 0.4s;
+
+}
+
+/* ======================================
+   MANA
+====================================== */
+
+.mana {
+
+  width: 0%;
+
+  height: 100%;
+
+  background:
+  linear-gradient(
+    90deg,
+    #00ffff,
+    #001b64
+  );
+
+  transition: 0.4s;
+
+}
+
+/* ======================================
+   ÁLCOOL
+====================================== */
+
+.alcool {
+
+  width: 0%;
+
+  height: 100%;
+
+  background:
+  linear-gradient(
+    90deg,
+    #fffb00,
+    #af1400
+  );
+
+  transition: 0.4s;
+
+}
+
+/* ======================================
+   TEXOS DAS BARRAS
+====================================== */
+
+.textoHP,
+.textoMana,
+.textoAlcool {
+
+  position: absolute;
+
+  width: 100%;
+
+  text-align: center;
+
+  font-weight: bold;
+
+}
+
+.textoHP {
+
+  top: 4px;
+
+}
+
+.textoMana,
+.textoAlcool {
+
+  top: 2px;
+
+  font-size: 12px;
+
+}
+
+/* ======================================
+   FORÇA
+====================================== */
+
+.forca1,
+.forca2 {
+
+  margin-top: 15px;
+
+  padding: 10px;
+
+  border-radius: 8px;
+
+  background:
+  rgba(0, 0, 0, 0.5);
+
+  border: 1px solid orange;
+
+  color: orange;
+
+  font-weight: bold;
+
+}
+
+/* ======================================
+   TÍTULOS
+====================================== */
+
+.tituloBarra {
+
+  margin-top: 12px;
+
+  margin-bottom: 5px;
+
+  font-weight: bold;
+
+  text-align: left;
+
+}
+
+/* ======================================
+   AÇÕES
+====================================== */
+
+.acoes {
+
+  margin-top: 10px;
+
+}
+
+.acoes button {
+
+  font-size: 14px;
+
+  padding: 8px 10px;
+
+  margin: 3px;
+
+  border-radius: 10px;
+
+}
+
+/* ======================================
+   TURNO BLOQUEADO
+====================================== */
+
+.bloqueado {
+
+  opacity: 0.4;
+
+  pointer-events: none;
+
+  filter: grayscale(100%);
+
+}
+
+/* ======================================
+   CONSOLE
+====================================== */
+
+#console {
+
+  width: 700px;
+
+  height: 180px;
+
+  margin: 40px auto;
+
+  padding: 15px;
+
+  overflow-y: auto;
+
+  border-radius: 12px;
+
+  background:
+  rgba(10, 10, 15, 0.9);
+
+  border: 3px solid #00ffcc;
+
+  color: #00ffcc;
+
+  font-family: Courier New;
+
+}
+
+#console p {
+
+  margin-bottom: 8px;
+
+}
+/* ======================================
+TELA DE VITÓRIA
+====================================== */
+
+#telaVitoria {
+
+  position: fixed;
+
+  inset: 0;
+
+  background:
+  rgba(0, 0, 0, 0.92);
+
+  display: flex;
+
+  flex-direction: column;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 30px;
+
+  z-index: 999;
+
+  opacity: 0;
+
+  pointer-events: none;
+
+  transition: 0.4s;
+
+}
+
+/* ATIVA */
+
+#telaVitoria.ativo {
+
+  opacity: 1;
+
+  pointer-events: all;
+
+}
+
+/* TEXO */
+
+#textoVitoria {
+
+  font-size: 90px;
+
+  color: white;
+
+  text-shadow:
+    0 0 20px red,
+    0 0 40px red,
+    0 0 80px red;
+
+  animation:
+  pulseVitoria 1s infinite alternate;
+
+}
+
+/* ANIMAÇÃO */
+
+@keyframes pulseVitoria {
+
+  from {
+
+    transform: scale(1);
+
+  }
+
+  to {
+
+    transform: scale(1.08);
+
+  }
+
+}
+@keyframes explosao {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+    filter: brightness(2);
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+.explosao {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, orange, red, transparent);
+  animation: explosao 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes explosao {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; filter: blur(4px); }
+}
+.mini-meteoro {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: radial-gradient(circle, orange, red);
+  border-radius: 50%;
+  box-shadow: 0 0 10px red;
+  z-index: 9999;
+  animation: cairMini 0.6s linear forwards;
+}
+
+@keyframes cairMini {
+  0% {
+    transform: translateY(-120px) scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(80px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+/* ======================================
+   FLASH ANIME
+====================================== */
+
+#flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ======================================
+   MINI METEORO
+====================================== */
+
+.mini-meteoro {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, orange, red);
+  box-shadow: 0 0 15px red;
+  z-index: 9998;
+  animation: cairMini 0.6s linear forwards;
+}
+
+@keyframes cairMini {
+  0% {
+    transform: translateY(-120px) scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(80px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* ======================================
+   EXPLOSÃO GIGANTE
+====================================== */
+
+.explosao {
+   position: fixed;
+  top: 70%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: radial-gradient(circle, white, orange, red, transparent);
+  animation: explosaoGrande 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 999;
+
+}
+
+@keyframes explosaoGrande {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(3);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+#flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-5px,5px); }
+  40% { transform: translate(5px,-5px); }
+  60% { transform: translate(-5px,-5px); }
+  80% { transform: translate(5px,5px); }
+  100% { transform: translate(0,0); }
+}
