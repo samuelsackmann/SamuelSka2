@@ -1,4 +1,4 @@
-import { personagem } from "./personagem.ts";
+import { personagem } from "./html/src1/personagem.ts";
 
 export class Mago extends personagem {
 

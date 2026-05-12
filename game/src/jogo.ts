@@ -5,19 +5,8 @@ import { Mago } from "./mago";
 // PERSONAGENS
 // ======================================
 
-let mago = new Mago(
-  "Mago",
-  46,
-  85,
-  20
-);
-
-let bardo = new Bardo(
-  "Bardo",
-  40,
-  100,
-  30
-);
+let mago = new Mago("Mago", 46, 85, 20);
+let bardo = new Bardo("Bardo", 40, 100, 30);
 
 // ======================================
 // TURNO
@@ -29,403 +18,203 @@ let turnoAtual = 0;
 // ELEMENTOS HTML
 // ======================================
 
-// VIDA MAGO
+const textoVidaMago = document.getElementById("hp1") as HTMLElement;
+const barraVidaMago = document.getElementById("vida1") as HTMLElement;
 
-const textoVidaMago =
-document.getElementById(
-  "hp1"
-) as HTMLElement;
+const textoVidaBardo = document.getElementById("hp2") as HTMLElement;
+const barraVidaBardo = document.getElementById("vida2") as HTMLElement;
 
-const barraVidaMago =
-document.getElementById(
-  "vida1"
-) as HTMLElement;
+const barraManaMago = document.getElementById("manaMago") as HTMLElement;
+const textoManaMago = document.getElementById("manaTexto") as HTMLElement;
 
-// VIDA BARDO
+const barraAlcoolBardo = document.getElementById("alcoolBardo") as HTMLElement;
+const textoAlcoolBardo = document.getElementById("alcoolTexto") as HTMLElement;
 
-const textoVidaBardo =
-document.getElementById(
-  "hp2"
-) as HTMLElement;
+const botaoUltimateMago = document.getElementById("ultiMago") as HTMLButtonElement;
+const botaoUltimateBardo = document.getElementById("ultiBardo") as HTMLButtonElement;
 
-const barraVidaBardo =
-document.getElementById(
-  "vida2"
-) as HTMLElement;
+const botaoResetar = document.getElementById("resetarBatalha") as HTMLButtonElement;
 
-// MANA
+const areaAcoesMago = document.getElementById("acoesMago") as HTMLElement;
+const areaAcoesBardo = document.getElementById("acoesBardo") as HTMLElement;
 
-const barraManaMago =
-document.getElementById(
-  "manaMago"
-) as HTMLElement;
+const imagemMago = document.getElementById("imgjogadorum") as HTMLImageElement;
+const imagemBardo = document.getElementById("imgjogadordois") as HTMLImageElement;
 
-const textoManaMago =
-document.getElementById(
-  "manaTexto"
-) as HTMLElement;
-
-// ÁLCOOL
-
-const barraAlcoolBardo =
-document.getElementById(
-  "alcoolBardo"
-) as HTMLElement;
-
-const textoAlcoolBardo =
-document.getElementById(
-  "alcoolTexto"
-) as HTMLElement;
-
-// BOTÕES
-
-const botaoUltimateMago =
-document.getElementById(
-  "ultiMago"
-) as HTMLButtonElement;
-
-const botaoUltimateBardo =
-document.getElementById(
-  "ultiBardo"
-) as HTMLButtonElement;
-
-// BOTÃO RESET
-
-const botaoResetar =
-document.getElementById(
-  "resetarBatalha"
-) as HTMLButtonElement;
-
-// ÁREA DE AÇÕES
-
-const areaAcoesMago =
-document.getElementById(
-  "acoesMago"
-) as HTMLElement;
-
-const areaAcoesBardo =
-document.getElementById(
-  "acoesBardo"
-) as HTMLElement;
-
-// IMAGENS
-
-const imagemMago =
-document.getElementById(
-  "imgjogadorum"
-) as HTMLImageElement;
-
-const imagemBardo =
-document.getElementById(
-  "imgjogadordois"
-) as HTMLImageElement;
-
-// CONSOLE
-
-const consoleBatalha =
-document.getElementById(
-  "console"
-) as HTMLElement;
+const consoleBatalha = document.getElementById("console") as HTMLElement;
 
 // ======================================
-// ATUALIZA INTERFACE
+// FLASH ANIME
+// ======================================
+
+function flashAnime(): void {
+  const flash = document.getElementById("flash") as HTMLElement;
+
+  flash.style.opacity = "1";
+
+  setTimeout(() => {
+    flash.style.opacity = "0";
+  }, 120);
+}
+
+// ======================================
+// EXPLOSÃO
+// ======================================
+
+function criarExplosaoBardo(): void {
+  const bardoEl = document.getElementById("cardBardo") as HTMLElement;
+
+  const explosao = document.createElement("div");
+  explosao.classList.add("explosao");
+
+  explosao.style.left = "50%";
+  explosao.style.top = "50%";
+  explosao.style.transform = "translate(-50%, -50%)";
+
+  bardoEl.style.position = "relative";
+  explosao.style.position = "absolute";
+
+  bardoEl.appendChild(explosao);
+
+  setTimeout(() => explosao.remove(), 600);
+}
+
+// ======================================
+// MINI METEORO
+// ======================================
+
+function criarMiniMeteoroNoBardo(): void {
+  const bardoEl = document.getElementById("cardBardo") as HTMLElement;
+
+  const meteoro = document.createElement("div");
+  meteoro.classList.add("mini-meteoro");
+
+  meteoro.style.left = "50%";
+  meteoro.style.top = "-30px";
+  meteoro.style.transform = "translateX(-50%)";
+
+  bardoEl.style.position = "relative";
+  meteoro.style.position = "absolute";
+
+  bardoEl.appendChild(meteoro);
+
+  setTimeout(() => meteoro.remove(), 600);
+}
+
+// ======================================
+// SHAKE
+// ======================================
+
+function shakeTela(): void {
+  document.body.classList.add("shake");
+
+  setTimeout(() => {
+    document.body.classList.remove("shake");
+  }, 300);
+}
+
+// ======================================
+// ATUALIZA TELA
 // ======================================
 
 function atualizarTela(): void {
-
-  atualizarVida();
-
-  atualizarMana();
-
-  atualizarAlcool();
-
-  atualizarUltimates();
-
-  atualizarTurnos();
-
-}
-
-// ======================================
-// VIDA
-// ======================================
-
-function atualizarVida(): void {
-
   textoVidaMago.innerHTML =
-  `${mago.getvida()} / ${mago.getvidaMax()}`;
+    `${mago.getvida().toFixed(2)} / ${mago.getvidaMax().toFixed(2)}`;
 
-  barraVidaMago.style.width =
-  `${mago.getvidaPercentual()}%`;
+  barraVidaMago.style.width = `${mago.getvidaPercentual()}%`;
 
   textoVidaBardo.innerHTML =
-  `${bardo.getvida()} / ${bardo.getvidaMax()}`;
+    `${bardo.getvida().toFixed(2)} / ${bardo.getvidaMax().toFixed(2)}`;
 
-  barraVidaBardo.style.width =
-  `${bardo.getvidaPercentual()}%`;
+  barraVidaBardo.style.width = `${bardo.getvidaPercentual()}%`;
 
-}
+  barraManaMago.style.width = `${mago.mana}%`;
+  textoManaMago.innerHTML = `${mago.mana}/100`;
 
-// ======================================
-// MANA
-// ======================================
+  barraAlcoolBardo.style.width = `${bardo.alcool}%`;
+  textoAlcoolBardo.innerHTML = `${bardo.alcool}/100`;
 
-function atualizarMana(): void {
+  botaoUltimateMago.disabled = mago.mana < 100;
+  botaoUltimateBardo.disabled = bardo.alcool < 100;
 
-  barraManaMago.style.width =
-  `${mago.mana}%`;
-
-  textoManaMago.innerHTML =
-  `${mago.mana}/100`;
-
-}
-
-// ======================================
-// ÁLCOOL
-// ======================================
-
-function atualizarAlcool(): void {
-
-  barraAlcoolBardo.style.width =
-  `${bardo.alcool}%`;
-
-  textoAlcoolBardo.innerHTML =
-  `${bardo.alcool}/100`;
-
-}
-
-// ======================================
-// ULTIMATES
-// ======================================
-
-function atualizarUltimates(): void {
-
-  botaoUltimateMago.disabled =
-  mago.mana < 100;
-
-  botaoUltimateBardo.disabled =
-  bardo.alcool < 100;
-
-}
-
-// ======================================
-// TURNOS
-// ======================================
-
-function atualizarTurnos(): void {
-
-  const turnoDoMago =
-  turnoAtual % 2 == 0;
-
-  // TURNO DO MAGO
+  const turnoDoMago = turnoAtual % 2 === 0;
 
   if (turnoDoMago) {
-
-    areaAcoesMago.classList.remove(
-      "bloqueado"
-    );
-
-    areaAcoesBardo.classList.add(
-      "bloqueado"
-    );
-
+    areaAcoesMago.classList.remove("bloqueado");
+    areaAcoesBardo.classList.add("bloqueado");
+  } else {
+    areaAcoesBardo.classList.remove("bloqueado");
+    areaAcoesMago.classList.add("bloqueado");
   }
-
-  // TURNO DO BARDO
-
-  else {
-
-    areaAcoesBardo.classList.remove(
-      "bloqueado"
-    );
-
-    areaAcoesMago.classList.add(
-      "bloqueado"
-    );
-
-  }
-
 }
 
 // ======================================
-// SISTEMA DE BATALHA
+// BATALHA
 // ======================================
 
-function executarTurno(
-  ataque: number,
-  jogador: number
-): void {
+function executarTurno(ataque: number, jogador: number): void {
+  if (!mago.isvivo() || !bardo.isvivo()) return;
 
-  // SE ALGUÉM MORREU
+  // ☄️ METEORO ULTIMATE
+  if (jogador === 1 && ataque === 3) {
+    criarMiniMeteoroNoBardo();
+    flashAnime();
+    shakeTela();
 
-  if (
-    !mago.isvivo() ||
-    !bardo.isvivo()
-  ) {
-
-    return;
-
+    setTimeout(() => {
+      criarExplosaoBardo();
+    }, 400);
   }
 
-  // TURNO DO MAGO
-
-  if (
-    turnoAtual % 2 == 0 &&
-    jogador == 1
-  ) {
-
-    mago.atacar(
-      bardo,
-      ataque
-    );
-
+  if (turnoAtual % 2 == 0 && jogador == 1) {
+    mago.atacar(bardo, ataque);
     turnoAtual++;
-
-  }
-
-  // TURNO DO BARDO
-
-  else if (
-    turnoAtual % 2 == 1 &&
-    jogador == 2
-  ) {
-
-    bardo.atacar(
-      mago,
-      ataque
-    );
-
+  } else if (turnoAtual % 2 == 1 && jogador == 2) {
+    bardo.atacar(mago, ataque);
     turnoAtual++;
-
   }
 
   atualizarTela();
-
   verificarVencedor();
-
 }
 
 // ======================================
-// VERIFICA VENCEDOR
+// VENCEDOR
 // ======================================
 
 function verificarVencedor(): void {
-
-  // BARDO VENCEU
-
-  if (!mago.isvivo()) {
-
-    mago.log(
-      "🎸 Bardo venceu!"
-    );
-
-  }
-
-  // MAGO VENCEU
-
-  if (!bardo.isvivo()) {
-
-    mago.log(
-      "🔥 Mago venceu!"
-    );
-
-  }
-
+  if (!mago.isvivo()) mago.log("🎸 Bardo venceu!");
+  if (!bardo.isvivo()) mago.log("🔥 Mago venceu!");
 }
 
 // ======================================
-// RESETAR BATALHA
+// RESET
 // ======================================
 
 function resetarBatalha(): void {
-
-  // RESETA TURNO
-
   turnoAtual = 0;
 
-  // RECRIA PERSONAGENS
+  mago = new Mago("Mago", 46, 85, 20);
+  bardo = new Bardo("Bardo", 40, 100, 30);
 
-  mago = new Mago(
-    "Mago",
-    46,
-    85,
-    20
-  );
+  imagemMago.src = mago.getimage();
+  imagemBardo.src = bardo.getimage();
 
-  bardo = new Bardo(
-    "Bardo",
-    40,
-    100,
-    30
-  );
-
-  // RESETA IMAGENS
-
-  imagemMago.src =
-  mago.getimage();
-
-  imagemBardo.src =
-  bardo.getimage();
-
-  // LIMPA CONSOLE
-
-  consoleBatalha.innerHTML =
-  "<p>⚔️ Nova batalha iniciada!</p>";
-
-  // ATUALIZA TELA
+  consoleBatalha.innerHTML = "<p>⚔️ Nova batalha iniciada!</p>";
 
   atualizarTela();
-
 }
 
 // ======================================
-// EVENTO BOTÃO RESET
+// EVENTOS
 // ======================================
 
-botaoResetar.addEventListener(
-  "click",
-  resetarBatalha
-);
+botaoResetar.addEventListener("click", resetarBatalha);
 
-// ======================================
-// IMAGENS
-// ======================================
-
-imagemMago.src =
-mago.getimage();
-
-imagemBardo.src =
-bardo.getimage();
-
-// ======================================
-// INICIAR
-// ======================================
+imagemMago.src = mago.getimage();
+imagemBardo.src = bardo.getimage();
 
 atualizarTela();
 
-// ======================================
-// BOTÕES HTML
-// ======================================
-
-(window as any).ataqueMago =
-function (
-  ataque: number
-): void {
-
-  executarTurno(
-    ataque,
-    1
-  );
-
-};
-
-(window as any).ataqueBardo =
-function (
-  ataque: number
-): void {
-
-  executarTurno(
-    ataque,
-    2
-  );
-
-};
+(window as any).ataqueMago = (a: number) => executarTurno(a, 1);
+(window as any).ataqueBardo = (a: number) => executarTurno(a, 2);

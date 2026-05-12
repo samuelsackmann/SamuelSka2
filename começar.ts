@@ -1,5 +1,5 @@
 // Importa a classe Bardo (personagem tipo suporte/dano)
-import { Bardo } from "./bardo.ts";
+import { Bardo } from "./html/src1/bardo.ts";
 
 // Importa a classe que controla o combate (turnos, ações, etc)
 import { Jogo } from "./jogo.ts";

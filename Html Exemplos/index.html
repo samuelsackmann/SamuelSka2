@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha página</title>
+
+<style>
+#butao {
+    width: 200px;
+    height: 200px;
+    background-color: green;
+    border-radius: 8px;
+}
+
+#butao {
+  width: 200px;
+  height: 200px;
+  background-color: green;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+#butao:hover {
+  background-color: greenyellow;
+  transition: 0.3s; 
+  width: 300px;
+  transition: 0.3s; 
+  height: 300px;
+  transition: 0.3s; 
+  border-radius: 50%;
+
+ 
+}
+
+#butao:active {
+  background-color: greenyellow;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+
+ 
+}
+.quadrado{
+    width: 250px;
+  height: 250px;
+  background-color: aquamarine;
+}
+
+
+#caxa {
+    width: 200px;
+    height: 200px;
+    background-color: green;
+    border-radius: 8px;
+}
+
+/* ANIMAÇÃO */
+@keyframes rrodar {
+  0% {
+    background-color: red;
+    transform: rotate(0deg);
+  }
+  50% {
+    background-color: blue;
+    transform: rotate(180deg);
+  }
+  100% {
+    background-color: rgb(0, 255, 21);
+    transform: rotate(360deg);
+  }
+}
+
+body {
+  height: 100vh;
+  margin: 0;
+  position: relative;
+}
+
+@keyframes caminhar {
+  from { transform: translateX(0); }
+  to   { transform: translateX(400px); }
+}
+
+.quadrado {
+  position: absolute;
+  top: 50%;                 
+  
+
+  width: 100px;
+  height: 100px;
+  background-color: red;
+
+  animation: caminhar 3s linear infinite;
+}
+
+.animacao {
+  animation: rrodar 0.02ms linear infinite;
+  width: 40px;
+  height: 40px;
+  border-radius: 45%;
+}
+</style>
+</head>
+
+<body>
+<h1>atividade</h1>
+<div class="quadrado"></div>
+<div id="caxa"></div>
+<div class="animacao"></div>
+<div class="caminhar"></div>
+<button id="butao">Clique</button>
+
+</body>
+</html>

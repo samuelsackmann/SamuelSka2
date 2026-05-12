@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini War Thunder 2D - V5 (Forças Combinadas)</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background-color: #2c3e50;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        canvas {
+            background-color: #557A46;
+            border: 4px solid #1a252f;
+            cursor: crosshair;
+            box-shadow: 0px 0px 30px rgba(0, 0, 0, 0.8);
+        }
+        #hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px black;
+            pointer-events: none;
+        }
+        .bar-container {
+            width: 200px;
+            height: 15px;
+            background-color: #333;
+            border: 2px solid white;
+            margin-top: 5px;
+            position: relative;
+        }
+        #health-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #2ecc71;
+            transition: width 0.2s, background-color 0.2s;
+        }
+        #air-bar {
+            width: 100%;
+            height: 100%;
+            background-color: #3498db;
+            transition: width 0.1s;
+        }
+        .bar-label {
+            position: absolute;
+            top: -2px;
+            left: 5px;
+            font-size: 12px;
+            color: white;
+            text-shadow: 1px 1px 1px black;
+        }
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            pointer-events: none;
+            text-align: center;
+            width: 100%;
+            text-shadow: 1px 1px 2px black;
+        }
+        #game-over {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #e74c3c;
+            border-radius: 10px;
+        }
+        #game-over button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="hud">
+        Abates: <span id="score">0</span>
+        <div class="bar-container">
+            <div id="health-bar"></div>
+            <span class="bar-label">HP</span>
+        </div>
+        <div class="bar-container">
+            <div id="air-bar"></div>
+            <span class="bar-label">CHAMAR AVIÃO [ESPAÇO]</span>
+        </div>
+    </div>
+    
+    <div class="controls">WASD: Mover | Mouse: Mirar | CLIQUE: Atirar | ESPAÇO: Apoio Aéreo</div>
+    
+    <div id="game-over">
+        <h1>VEÍCULO DESTRUÍDO</h1>
+        <p>Inimigos abatidos: <span id="final-score">0</span></p>
+        <button onclick="document.location.reload()">Jogar Novamente</button>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const scoreElement = document.getElementById('score');
+        const healthBar = document.getElementById('health-bar');
+        const airBar = document.getElementById('air-bar');
+        const gameOverScreen = document.getElementById('game-over');
+        const finalScoreElement = document.getElementById('final-score');
+
+        let score = 0;
+        let keys = {};
+        let mouseX = 0;
+        let mouseY = 0;
+        let gameActive = true;
+
+        let airStrikeCooldown = 0;
+        const AIR_STRIKE_MAX = 400; 
+
+        const TANK_TYPES = {
+            PLAYER: { w: 45, h: 55, speed: 3.5, hp: 150, color: '#2980b9', cd: 25, pSpeed: 14, pSize: 4, pDmg: 20, pColor: '#f1c40f', barrelL: 40, barrelW: 5 },
+            LIGHT:  { w: 30, h: 40, speed: 2.2, hp: 10, color: '#e67e22', cd: 50, pSpeed: 10, pSize: 3, pDmg: 5,  pColor: '#f39c12', barrelL: 30, barrelW: 4 },
+            MEDIUM: { w: 40, h: 50, speed: 1.3, hp: 20, color: '#c0392b', cd: 90, pSpeed: 8, pSize: 5, pDmg: 15, pColor: '#e74c3c', barrelL: 40, barrelW: 6 },
+            HEAVY:  { w: 55, h: 70, speed: 0.6, hp: 50, color: '#8e44ad', cd: 160, pSpeed: 5, pSize: 8, pDmg: 35, pColor: '#9b59b6', barrelL: 50, barrelW: 10 }
+        };
+
+        window.addEventListener('keydown', e => {
+            keys[e.key.toLowerCase()] = true;
+            if (e.key === ' ' && airStrikeCooldown <= 0 && gameActive) {
+                // Chama o avião aliado de fora da tela em direção ao mouse
+                spawnAirplane(mouseX, mouseY, true);
+                airStrikeCooldown = AIR_STRIKE_MAX;
+            }
+        });
+        window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+        
+        canvas.addEventListener('mousemove', e => {
+            const rect = canvas.getBoundingClientRect();
+            mouseX = e.clientX - rect.left;
+            mouseY = e.clientY - rect.top;
+        });
+        
+        canvas.addEventListener('mousedown', () => {
+            if (gameActive && player.shootCooldown <= 0) {
+                player.shoot();
+                player.shootCooldown = player.type.cd;
+            }
+        });
+
+        // CLASSES DO JOGO
+        class Particle {
+            constructor(x, y, color, sizeMultiplier = 1, speedMultiplier = 1) {
+                this.x = x;
+                this.y = y;
+                this.color = color;
+                this.size = (Math.random() * 5 + 2) * sizeMultiplier;
+                this.life = 1.0;
+                let angle = Math.random() * Math.PI * 2;
+                let speed = (Math.random() * 4 + 1) * speedMultiplier;
+                this.vx = Math.cos(angle) * speed;
+                this.vy = Math.sin(angle) * speed;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life -= 0.03;
+            }
+            draw() {
+                ctx.globalAlpha = Math.max(0, this.life);
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        function createBombExplosion(x, y, isAllied) {
+            craters.push({x: x, y: y, radius: 45, isBurned: true});
+            for (let i = 0; i < 40; i++) {
+                particles.push(new Particle(x, y, '#e74c3c', 2, 2));
+                particles.push(new Particle(x, y, '#f1c40f', 1.5, 3));
+                particles.push(new Particle(x, y, '#222', 3, 1.5)); 
+            }
+
+            // Dano em área
+            if (isAllied) {
+                enemies.forEach(enemy => {
+                    if (enemy.active && Math.hypot(x - enemy.x, y - enemy.y) < 100) enemy.takeDamage(100);
+                });
+            } else {
+                if (Math.hypot(x - player.x, y - player.y) < 100) player.takeDamage(40);
+            }
+        }
+
+        class Airplane {
+            constructor(startX, startY, targetX, targetY, isAllied) {
+                this.x = startX;
+                this.y = startY;
+                this.targetX = targetX;
+                this.targetY = targetY;
+                this.isAllied = isAllied;
+                this.speed = 7;
+                this.angle = Math.atan2(targetY - startY, targetX - startX);
+                this.vx = Math.cos(this.angle) * this.speed;
+                this.vy = Math.sin(this.angle) * this.speed;
+                this.dropped = false;
+                this.active = true;
+                this.color = isAllied ? '#3498db' : '#9b59b6'; // Azul aliado, Roxo inimigo
+                this.hp = 30; // Vida do avião
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Soltar a bomba quando estiver sobre o alvo
+                if (!this.dropped && Math.hypot(this.x - this.targetX, this.y - this.targetY) < 15) {
+                    this.dropped = true;
+                    createBombExplosion(this.x, this.y, this.isAllied);
+                }
+
+                // Sair da tela desativa o avião
+                if (this.x < -200 || this.x > canvas.width + 200 || this.y < -200 || this.y > canvas.height + 200) {
+                    this.active = false;
+                }
+            }
+
+            draw() {
+                if (!this.active) return;
+                
+                // Desenhar alvo se não soltou a bomba ainda (só aliado)
+                if (this.isAllied && !this.dropped) {
+                    ctx.strokeStyle = `rgba(231, 76, 60, 0.5)`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(this.targetX, this.targetY, 20, 0, Math.PI * 2);
+                    ctx.stroke();
+                    ctx.beginPath();
+                    ctx.arc(this.targetX, this.targetY, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+
+                // Sombra (Deslocada para dar sensação de altura)
+                ctx.save();
+                ctx.translate(-30, 40);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(-15, -4, 30, 8); // Corpo sombra
+                ctx.fillRect(0, -20, 10, 40); // Asas sombra
+                ctx.fillRect(-15, -10, 6, 20); // Cauda sombra
+                ctx.restore();
+
+                // Avião
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-15, -4, 30, 8); // Fuselagem
+                ctx.fillStyle = '#bdc3c7';
+                ctx.fillRect(0, -20, 10, 40); // Asas principais
+                ctx.fillRect(-15, -10, 6, 20); // Asas traseiras
+                
+                // Hélice borrada animada
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+                ctx.fillRect(15, -8, 2, 16);
+
+                ctx.restore();
+            }
+
+            takeDamage(amount) {
+                this.hp -= amount;
+                if (this.hp <= 0) {
+                    this.active = false;
+                    for (let i = 0; i < 20; i++) particles.push(new Particle(this.x, this.y, '#e67e22', 1.5, 2));
+                    if (!this.isAllied) {
+                        score += 5; // Aviões dão mais pontos
+                        scoreElement.innerText = score;
+                    }
+                }
+            }
+        }
+
+        class Tank {
+            constructor(x, y, typeObj, isPlayer = false) {
+                this.x = x;
+                this.y = y;
+                this.type = typeObj;
+                this.width = typeObj.w;
+                this.height = typeObj.h;
+                this.color = typeObj.color;
+                this.speed = typeObj.speed;
+                this.maxHp = typeObj.hp;
+                this.hp = this.maxHp;
+                this.angle = 0;
+                this.turretAngle = 0;
+                this.isPlayer = isPlayer;
+                this.active = true;
+                this.shootCooldown = 0;
+            }
+
+            draw() {
+                if (!this.active) return;
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.angle);
+                ctx.fillStyle = this.color;
+                ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.3)';
+                ctx.fillRect(-this.width / 2, -this.height / 2, this.width, 10);
+                ctx.fillStyle = '#111';
+                ctx.fillRect(-this.width / 2 - 5, -this.height / 2, 5, this.height);
+                ctx.fillRect(this.width / 2, -this.height / 2, 5, this.height);
+                ctx.restore();
+
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.turretAngle);
+                ctx.fillStyle = '#666';
+                if (this.isPlayer) {
+                    ctx.fillRect(-this.type.barrelW / 2 - 6, -this.type.barrelL, this.type.barrelW, this.type.barrelL);
+                    ctx.fillRect(-this.type.barrelW / 2 + 6, -this.type.barrelL, this.type.barrelW, this.type.barrelL);
+                } else {
+                    ctx.fillRect(-this.type.barrelW / 2, -this.type.barrelL, this.type.barrelW, this.type.barrelL);
+                }
+                ctx.fillStyle = '#333';
+                ctx.beginPath();
+                ctx.arc(0, 0, this.width * 0.35, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+                
+                if (!this.isPlayer && this.hp < this.maxHp) {
+                    ctx.fillStyle = 'red';
+                    ctx.fillRect(this.x - 15, this.y - this.height/2 - 15, 30, 4);
+                    ctx.fillStyle = '#2ecc71';
+                    ctx.fillRect(this.x - 15, this.y - this.height/2 - 15, 30 * (this.hp / this.maxHp), 4);
+                }
+            }
+
+            update() {
+                if (!this.active) return;
+                if (this.shootCooldown > 0) this.shootCooldown--;
+
+                if (this.isPlayer) {
+                    let dx = 0, dy = 0;
+                    if (keys['w']) dy -= this.speed;
+                    if (keys['s']) dy += this.speed;
+                    if (keys['a']) dx -= this.speed;
+                    if (keys['d']) dx += this.speed;
+
+                    this.x += dx;
+                    this.y += dy;
+                    this.x = Math.max(this.width, Math.min(canvas.width - this.width, this.x));
+                    this.y = Math.max(this.height, Math.min(canvas.height - this.height, this.y));
+
+                    if (dx !== 0 || dy !== 0) this.angle = Math.atan2(dy, dx) + Math.PI / 2;
+                    this.turretAngle = Math.atan2(mouseY - this.y, mouseX - this.x) + Math.PI / 2;
+                } else {
+                    let dx = player.x - this.x;
+                    let dy = player.y - this.y;
+                    let distance = Math.hypot(dx, dy);
+
+                    if (distance > 100) { 
+                        this.x += (dx / distance) * this.speed;
+                        this.y += (dy / distance) * this.speed;
+                        this.angle = Math.atan2(dy, dx) + Math.PI / 2;
+                    }
+                    this.turretAngle = Math.atan2(dy, dx) + Math.PI / 2;
+
+                    if (distance < 500 && this.shootCooldown <= 0) {
+                        this.shoot();
+                        this.shootCooldown = this.type.cd + (Math.random() * 40); 
+                    }
+                }
+            }
+
+            shoot() {
+                if (!this.active) return;
+                let angleOffset = Math.PI/2;
+                if (this.isPlayer) {
+                    let offset = 6;
+                    let baseX = this.x + Math.cos(this.turretAngle - angleOffset) * this.type.barrelL;
+                    let baseY = this.y + Math.sin(this.turretAngle - angleOffset) * this.type.barrelL;
+                    let proj1X = baseX + Math.cos(this.turretAngle) * offset;
+                    let proj1Y = baseY + Math.sin(this.turretAngle) * offset;
+                    let proj2X = baseX - Math.cos(this.turretAngle) * offset;
+                    let proj2Y = baseY - Math.sin(this.turretAngle) * offset;
+
+                    projectiles.push(new Projectile(proj1X, proj1Y, this.turretAngle - angleOffset, true, this.type));
+                    projectiles.push(new Projectile(proj2X, proj2Y, this.turretAngle - angleOffset, true, this.type));
+                } else {
+                    let projX = this.x + Math.cos(this.turretAngle - angleOffset) * this.type.barrelL;
+                    let projY = this.y + Math.sin(this.turretAngle - angleOffset) * this.type.barrelL;
+                    projectiles.push(new Projectile(projX, projY, this.turretAngle - angleOffset, false, this.type));
+                }
+                this.x -= Math.cos(this.turretAngle - angleOffset) * 2;
+                this.y -= Math.sin(this.turretAngle - angleOffset) * 2;
+            }
+
+            takeDamage(amount) {
+                this.hp -= amount;
+                if (this.hp <= 0) {
+                    this.active = false;
+                    for (let i = 0; i < 15; i++) particles.push(new Particle(this.x, this.y, this.color));
+                    if (this.isPlayer) {
+                        endGame();
+                    } else {
+                        score += (this.type === TANK_TYPES.HEAVY ? 3 : (this.type === TANK_TYPES.LIGHT ? 1 : 2));
+                        scoreElement.innerText = score;
+                    }
+                }
+                if (this.isPlayer) updateHealthBar();
+            }
+        }
+
+        class Projectile {
+            constructor(x, y, angle, isPlayerProjectile, tankType) {
+                this.x = x;
+                this.y = y;
+                this.vx = Math.cos(angle) * tankType.pSpeed;
+                this.vy = Math.sin(angle) * tankType.pSpeed;
+                this.isPlayerProjectile = isPlayerProjectile;
+                this.size = tankType.pSize;
+                this.damage = tankType.pDmg;
+                this.color = tankType.pColor;
+                this.active = true;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.active = false;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+                ctx.beginPath();
+                ctx.arc(this.x - this.vx * 0.5, this.y - this.vy * 0.5, this.size * 0.6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // Variáveis Globais
+        const player = new Tank(400, 300, TANK_TYPES.PLAYER, true);
+        let enemies = [];
+        let projectiles = [];
+        let particles = [];
+        let craters = [];
+        let airplanes = [];
+
+        // Cenário inicial
+        for (let i = 0; i < 15; i++) craters.push({x: Math.random() * canvas.width, y: Math.random() * canvas.height, radius: Math.random() * 25 + 5, isBurned: false});
+
+        function getEdgeCoords() {
+            let side = Math.floor(Math.random() * 4);
+            if (side === 0) return { x: Math.random() * canvas.width, y: -100 };
+            if (side === 1) return { x: canvas.width + 100, y: Math.random() * canvas.height };
+            if (side === 2) return { x: Math.random() * canvas.width, y: canvas.height + 100 };
+            return { x: -100, y: Math.random() * canvas.height };
+        }
+
+        function spawnEnemy() {
+            if (!gameActive) return;
+            let coords = getEdgeCoords();
+            let chance = Math.random();
+            let type = TANK_TYPES.MEDIUM;
+            if (chance < 0.2) type = TANK_TYPES.HEAVY;
+            else if (chance < 0.5) type = TANK_TYPES.LIGHT;
+
+            enemies.push(new Tank(coords.x, coords.y, type, false));
+            setTimeout(spawnEnemy, Math.max(600, 2500 - (score * 50)));
+        }
+
+        function spawnEnemyPlane() {
+            if (!gameActive) return;
+            let start = getEdgeCoords();
+            // Avião inimigo mira no jogador
+            airplanes.push(new Airplane(start.x, start.y, player.x + (Math.random()*100 - 50), player.y + (Math.random()*100 - 50), false));
+            setTimeout(spawnEnemyPlane, Math.random() * 10000 + 10000); // 10 a 20 segundos
+        }
+
+        function spawnAirplane(tX, tY, isAllied) {
+            let start = getEdgeCoords();
+            airplanes.push(new Airplane(start.x, start.y, tX, tY, isAllied));
+        }
+
+        function updateHealthBar() {
+            let percentage = Math.max(0, (player.hp / player.maxHp) * 100);
+            healthBar.style.width = percentage + '%';
+            if (percentage < 30) healthBar.style.backgroundColor = '#e74c3c';
+            else if (percentage < 60) healthBar.style.backgroundColor = '#f1c40f';
+            else healthBar.style.backgroundColor = '#2ecc71';
+        }
+
+        function updateAirBar() {
+            if (airStrikeCooldown > 0) {
+                let percentage = 100 - ((airStrikeCooldown / AIR_STRIKE_MAX) * 100);
+                airBar.style.width = percentage + '%';
+                airBar.style.backgroundColor = '#7f8c8d';
+            } else {
+                airBar.style.width = '100%';
+                airBar.style.backgroundColor = '#3498db';
+            }
+        }
+
+        function endGame() {
+            gameActive = false;
+            finalScoreElement.innerText = score;
+            gameOverScreen.style.display = 'block';
+        }
+
+        setTimeout(spawnEnemy, 2000);
+        setTimeout(spawnEnemyPlane, 15000); // Primeiro avião inimigo vem depois de 15s
+
+        function gameLoop() {
+            ctx.fillStyle = '#557A46';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            craters.forEach(c => {
+                ctx.fillStyle = c.isBurned ? 'rgba(0, 0, 0, 0.4)' : 'rgba(0, 0, 0, 0.15)';
+                ctx.beginPath();
+                ctx.arc(c.x, c.y, c.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            if (gameActive) {
+                player.update();
+                player.draw();
+                if (airStrikeCooldown > 0) airStrikeCooldown--;
+                updateAirBar();
+            }
+
+            projectiles.forEach((p) => {
+                p.update();
+                p.draw();
+                if (p.active) {
+                    // Colisão Tiro vs Tanques Inimigos
+                    if (p.isPlayerProjectile) {
+                        enemies.forEach(enemy => {
+                            if (enemy.active && Math.hypot(p.x - enemy.x, p.y - enemy.y) < (enemy.width/2 + p.size)) {
+                                p.active = false;
+                                enemy.takeDamage(p.damage);
+                            }
+                        });
+                        // Colisão Tiro vs Aviões Inimigos (Anti-Aérea!)
+                        airplanes.forEach(plane => {
+                            if (plane.active && !plane.isAllied && Math.hypot(p.x - plane.x, p.y - plane.y) < 25) {
+                                p.active = false;
+                                plane.takeDamage(p.damage);
+                            }
+                        });
+                    } else if (gameActive && Math.hypot(p.x - player.x, p.y - player.y) < (player.width/2 + p.size)) {
+                        p.active = false;
+                        player.takeDamage(p.damage);
+                    }
+                }
+            });
+
+            enemies.forEach((enemy) => {
+                enemy.update();
+                enemy.draw();
+                if (gameActive && enemy.active && Math.hypot(player.x - enemy.x, player.y - enemy.y) < ((player.width/2) + (enemy.width/2))) {
+                    player.takeDamage(0.5); 
+                    enemy.takeDamage(0.5);
+                }
+            });
+
+            // Atualizar Aviões
+            airplanes.forEach(plane => {
+                plane.update();
+                plane.draw();
+            });
+
+            particles.forEach((part) => {
+                part.update();
+                part.draw();
+            });
+
+            // Limpeza
+            projectiles = projectiles.filter(p => p.active);
+            enemies = enemies.filter(e => e.active);
+            particles = particles.filter(p => p.life > 0);
+            airplanes = airplanes.filter(a => a.active);
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+    </script>
+</body>
+</html>

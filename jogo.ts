@@ -1,6 +1,6 @@
 // Importa a classe base personagem
 // Isso permite usar qualquer personagem (Mago, Bardo, etc)
-import { personagem } from "./personagem.ts";
+import { personagem } from "./html/src1/personagem.ts";
 
 
 // Classe que controla a batalha
@@ -65,7 +65,7 @@ export class Jogo {
 
         } else {
 
-            // Caso contrário (70% de chance),
+          
             // o personagem realiza um ataque
             atacante.atacar(alvo);
         }

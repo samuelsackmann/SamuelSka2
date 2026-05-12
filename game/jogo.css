@@ -631,3 +631,149 @@ TELA DE VITÓRIA
   }
 
 }
+@keyframes explosao {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+    filter: brightness(2);
+  }
+
+  50% {
+    transform: scale(1.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+.explosao {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: radial-gradient(circle, orange, red, transparent);
+  animation: explosao 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes explosao {
+  0% { transform: scale(0.2); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; filter: blur(4px); }
+}
+.mini-meteoro {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: radial-gradient(circle, orange, red);
+  border-radius: 50%;
+  box-shadow: 0 0 10px red;
+  z-index: 9999;
+  animation: cairMini 0.6s linear forwards;
+}
+
+@keyframes cairMini {
+  0% {
+    transform: translateY(-120px) scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(80px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+/* ======================================
+   FLASH ANIME
+====================================== */
+
+#flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+/* ======================================
+   MINI METEORO
+====================================== */
+
+.mini-meteoro {
+  position: absolute;
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: radial-gradient(circle, orange, red);
+  box-shadow: 0 0 15px red;
+  z-index: 9998;
+  animation: cairMini 0.6s linear forwards;
+}
+
+@keyframes cairMini {
+  0% {
+    transform: translateY(-120px) scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(80px) scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* ======================================
+   EXPLOSÃO GIGANTE
+====================================== */
+
+.explosao {
+   position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 1000px;
+  height: 1000px;
+  border-radius: 50%;
+  background: radial-gradient(circle, white, orange, red, transparent);
+  animation: explosaoGrande 0.6s ease-out forwards;
+  pointer-events: none;
+  z-index: 999;
+
+}
+
+@keyframes explosaoGrande {
+  0% {
+    transform: scale(0.2);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(3);
+    opacity: 0;
+    filter: blur(8px);
+  }
+}
+#flash {
+  position: fixed;
+  inset: 0;
+  background: white;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.shake {
+  animation: shake 0.3s;
+}
+
+@keyframes shake {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-5px,5px); }
+  40% { transform: translate(5px,-5px); }
+  60% { transform: translate(-5px,-5px); }
+  80% { transform: translate(5px,5px); }
+  100% { transform: translate(0,0); }
+}
