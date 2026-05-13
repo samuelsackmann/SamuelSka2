@@ -134,7 +134,7 @@ export class Mago extends personagem {
 
     }
 
-    this.mana = 0;
+    this.mana = 100;
 
     const dano =
     this.gerarataque() + 80;
