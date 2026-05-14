@@ -39,7 +39,7 @@ export class Mago extends personagem {
       break;
 
       case 2:
-        this.curar();
+        this.recuperarVida();
       break;
 
       case 3:
@@ -105,7 +105,7 @@ export class Mago extends personagem {
     this.mana = 0;
 
     const dano =
-    this.gerarataque() + 100;
+    this.gerarataque() + 150;
 
     this.log(
       "☄️ METEORO ☄️"
@@ -119,7 +119,7 @@ export class Mago extends personagem {
 
   }
 
-  override curar(): void {
+  override recuperarVida(): void {
 
     const valorCura = 25;
 
@@ -138,7 +138,9 @@ export class Mago extends personagem {
       this.hp = this.hpMax;
 
     }
-
+this.log(
+    `💚 Recuperou ${valorCura} HP`
+  );
     this.log(
       `${this.nome} bebeu Guaraviton 🧪`
     );

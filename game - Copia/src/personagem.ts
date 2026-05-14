@@ -114,23 +114,19 @@ export abstract class personagem {
 
   }
 
-  public curar(): void {
+ protected recuperarVida(
+  valor: number
+): void {
 
-    const valorCura = 50;
+  this.hp += valor;
 
-    this.hp += valorCura;
+  if (this.hp > this.hpMax) {
 
-    if (this.hp > this.hpMax) {
-
-      this.hp = this.hpMax;
-
-    }
-
-    this.log(
-      `${this.nome} ${this.msgCura}`
-    );
+    this.hp = this.hpMax;
 
   }
+
+}
 
   public efeitoDano(
     id: string

@@ -33,7 +33,7 @@ export class Bardo extends personagem {
       break;
 
       case 1:
-        this.curar();
+        this.recuperarVida();
       break;
 
       case 2:
@@ -41,7 +41,7 @@ export class Bardo extends personagem {
       break;
 
       case 3:
-        this.soloLendario(alvo);
+        this.seduzir(alvo);
       break;
 
     }
@@ -86,7 +86,7 @@ export class Bardo extends personagem {
 
   }
 
-  public soloLendario(
+  public seduzir(
     alvo: personagem
   ): void {
 
@@ -106,7 +106,7 @@ export class Bardo extends personagem {
     this.gerarataque() + 90;
 
     this.log(
-      `🎸 SOLO LENDÁRIO 🎸`
+      `❤️Serenata❤️`
     );
 
     alvo.sofrerDano(dano);
@@ -117,11 +117,11 @@ export class Bardo extends personagem {
 
   }
 
-  override curar(): void {
+  override recuperarVida(): void {
 
-    const cura = 16;
+    const valorCura = 16;
 
-    this.hp += cura;
+    this.hp += valorCura;
 
     this.alcool += 25;
 
@@ -136,6 +136,9 @@ export class Bardo extends personagem {
     this.log(
       `${this.nome} bebeu cachaça 🍺`
     );
+this.log(
+    `💚 Recuperou ${valorCura} HP`
+  );
 
     this.log(
       `${this.nome} ganhou +25 Álcool 🍻`

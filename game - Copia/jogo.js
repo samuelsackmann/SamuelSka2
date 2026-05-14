@@ -45,15 +45,11 @@
         `${this.nome} sofreu ${danoFinal.toFixed(0)} de dano`
       );
     }
-    curar() {
-      const valorCura = 50;
-      this.hp += valorCura;
+    recuperarVida(valor) {
+      this.hp += valor;
       if (this.hp > this.hpMax) {
         this.hp = this.hpMax;
       }
-      this.log(
-        `${this.nome} ${this.msgCura}`
-      );
     }
     efeitoDano(id) {
       const imagem = document.getElementById(
@@ -97,13 +93,13 @@
           this.gritoDoRock(alvo);
           break;
         case 1:
-          this.curar();
+          this.recuperarVida();
           break;
         case 2:
           this.musicaOfensiva(alvo);
           break;
         case 3:
-          this.soloLendario(alvo);
+          this.seduzir(alvo);
           break;
       }
     }
@@ -127,7 +123,7 @@
         "imgjogadorum"
       );
     }
-    soloLendario(alvo) {
+    seduzir(alvo) {
       if (this.alcool < 100) {
         this.log(
           "\xC1lcool insuficiente \u{1F37A}"
@@ -137,16 +133,16 @@
       this.alcool = 0;
       const dano = this.gerarataque() + 90;
       this.log(
-        `\u{1F3B8} SOLO LEND\xC1RIO \u{1F3B8}`
+        `\u2764\uFE0FSerenata\u2764\uFE0F`
       );
       alvo.sofrerDano(dano);
       this.efeitoDano(
         "imgjogadorum"
       );
     }
-    curar() {
-      const cura = 16;
-      this.hp += cura;
+    recuperarVida() {
+      const valorCura = 16;
+      this.hp += valorCura;
       this.alcool += 25;
       if (this.alcool > 100) {
         this.alcool = 100;
@@ -156,6 +152,9 @@
       }
       this.log(
         `${this.nome} bebeu cacha\xE7a \u{1F37A}`
+      );
+      this.log(
+        `\u{1F49A} Recuperou ${valorCura} HP`
       );
       this.log(
         `${this.nome} ganhou +25 \xC1lcool \u{1F37B}`
@@ -199,7 +198,7 @@
           this.macumba(alvo);
           break;
         case 2:
-          this.curar();
+          this.recuperarVida();
           break;
         case 3:
           this.meteoro(alvo);
@@ -234,7 +233,7 @@
         return;
       }
       this.mana = 0;
-      const dano = this.gerarataque() + 100;
+      const dano = this.gerarataque() + 150;
       this.log(
         "\u2604\uFE0F METEORO \u2604\uFE0F"
       );
@@ -243,7 +242,7 @@
         "imgjogadordois"
       );
     }
-    curar() {
+    recuperarVida() {
       const valorCura = 25;
       this.hp += valorCura;
       this.mana += 25;
@@ -253,6 +252,9 @@
       if (this.hp > this.hpMax) {
         this.hp = this.hpMax;
       }
+      this.log(
+        `\u{1F49A} Recuperou ${valorCura} HP`
+      );
       this.log(
         `${this.nome} bebeu Guaraviton \u{1F9EA}`
       );
@@ -278,7 +280,7 @@
   }
   var Game = class {
     constructor() {
-      this.mago = new Mago("Mago", 46, 400, 20);
+      this.mago = new Mago("Mago", 50, 400, 20);
       this.bardo = new Bardo("Bardo", 40, 500, 30);
       this.turnoAtual = 0;
       this.jogoFinalizado = false;
@@ -379,7 +381,7 @@
           this.criarExplosaoBardo();
         }, 400);
       }
-      if (jogador === 2 && ataque === 3 /* Solo */) {
+      if (jogador === 2 && ataque === 3 /* seduzir */) {
         this.criarOndaSonora();
         this.shakeTela();
       }

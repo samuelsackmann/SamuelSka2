@@ -13,7 +13,7 @@ enum AtaqueBardo {
   GritoRock,
   Cachaca,
   Arrocha,
-  Solo
+  seduzir
 }
 
 function pegarElemento<T extends HTMLElement>(id: string): T {
@@ -22,7 +22,7 @@ function pegarElemento<T extends HTMLElement>(id: string): T {
 
 class Game {
 
-  private mago = new Mago("Mago", 46, 400, 20);
+  private mago = new Mago("Mago", 50, 400, 20);
   private bardo = new Bardo("Bardo", 40, 500, 30);
 
   private turnoAtual = 0;
@@ -173,7 +173,7 @@ class Game {
       }, 400);
     }
 
-    if (jogador === 2 && ataque === AtaqueBardo.Solo) {
+    if (jogador === 2 && ataque === AtaqueBardo.seduzir) {
       this.criarOndaSonora();
       this.shakeTela();
     }
