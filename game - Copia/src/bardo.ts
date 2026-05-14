@@ -1,4 +1,4 @@
-import { personagem } from "./personagem";
+ import { personagem } from "./personagem";
 
 export class Bardo extends personagem {
 
@@ -10,17 +10,15 @@ export class Bardo extends personagem {
     hp: number,
     defesa: number
   ) {
-
     super(
       nome,
       forca,
       hp,
-      100,
+      500,
       defesa,
       "bebeu cachaça 🍺",
       "https://i.pinimg.com/736x/61/21/a3/6121a37eccc3782b993e8c95aea1316c.jpg"
     );
-
   }
 
   atacar(
@@ -31,36 +29,24 @@ export class Bardo extends personagem {
     switch (ataque) {
 
       case 0:
-
         this.gritoDoRock(alvo);
-
       break;
 
       case 1:
-
         this.curar();
-
       break;
 
       case 2:
-
         this.musicaOfensiva(alvo);
-
       break;
 
       case 3:
-
         this.soloLendario(alvo);
-
       break;
 
     }
 
   }
-
-  // ===============================
-  // GRITO DO ROCK
-  // ===============================
 
   public gritoDoRock(
     alvo: personagem
@@ -75,16 +61,11 @@ export class Bardo extends personagem {
 
     alvo.sofrerDano(dano);
 
-    // HIT NO MAGO
     this.efeitoDano(
       "imgjogadorum"
     );
 
   }
-
-  // ===============================
-  // ARROCHA
-  // ===============================
 
   public musicaOfensiva(
     alvo: personagem
@@ -99,16 +80,11 @@ export class Bardo extends personagem {
 
     alvo.sofrerDano(dano);
 
-    // HIT NO MAGO
     this.efeitoDano(
       "imgjogadorum"
     );
 
   }
-
-  // ===============================
-  // SOLO LENDÁRIO
-  // ===============================
 
   public soloLendario(
     alvo: personagem
@@ -135,16 +111,11 @@ export class Bardo extends personagem {
 
     alvo.sofrerDano(dano);
 
-    // HIT NO MAGO
     this.efeitoDano(
       "imgjogadorum"
     );
 
   }
-
-  // ===============================
-  // CURA
-  // ===============================
 
   override curar(): void {
 
@@ -155,15 +126,11 @@ export class Bardo extends personagem {
     this.alcool += 25;
 
     if (this.alcool > 100) {
-
       this.alcool = 100;
-
     }
 
     if (this.hp > this.hpMax) {
-
       this.hp = this.hpMax;
-
     }
 
     this.log(
@@ -175,10 +142,6 @@ export class Bardo extends personagem {
     );
 
   }
-
-  // ===============================
-  // EFEITO VISUAL
-  // ===============================
 
   public efeitoDano(
     id: string

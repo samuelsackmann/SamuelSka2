@@ -2,9 +2,6 @@
 (() => {
   // src/personagem.ts
   var personagem = class {
-    // ======================================
-    // CONSTRUTOR
-    // ======================================
     constructor(nome, forca, hp, hpMax, defesa, msgCura, imagem) {
       this.nome = nome;
       this.forca = forca;
@@ -14,9 +11,6 @@
       this.msgCura = msgCura;
       this.imagem = imagem;
     }
-    // ======================================
-    // GETTERS
-    // ======================================
     getvida() {
       return this.hp;
     }
@@ -29,23 +23,14 @@
     getimage() {
       return this.imagem;
     }
-    // ======================================
-    // SISTEMA DE ATAQUE
-    // ======================================
     gerarataque() {
       return Math.floor(
         Math.random() * this.forca
       ) + 1;
     }
-    // ======================================
-    // STATUS
-    // ======================================
     isvivo() {
       return this.hp > 0;
     }
-    // ======================================
-    // DANO
-    // ======================================
     sofrerDano(dano) {
       const reducaoDefesa = dano * (this.defesa / 100);
       let danoFinal = dano - reducaoDefesa;
@@ -60,9 +45,6 @@
         `${this.nome} sofreu ${danoFinal.toFixed(0)} de dano`
       );
     }
-    // ======================================
-    // CURA
-    // ======================================
     curar() {
       const valorCura = 30;
       this.hp += valorCura;
@@ -73,14 +55,25 @@
         `${this.nome} ${this.msgCura}`
       );
     }
-    // ======================================
-    // LOG
-    // ======================================
+    efeitoDano(id) {
+      const imagem = document.getElementById(
+        id
+      );
+      imagem.classList.add(
+        "hit"
+      );
+      setTimeout(() => {
+        imagem.classList.remove(
+          "hit"
+        );
+      }, 300);
+    }
     log(mensagem) {
       const consoleHTML = document.getElementById(
         "console"
       );
       consoleHTML.innerHTML += `<p>${mensagem}</p>`;
+      consoleHTML.scrollTop = consoleHTML.scrollHeight;
     }
   };
 
@@ -91,7 +84,7 @@
         nome,
         forca,
         hp,
-        100,
+        500,
         defesa,
         "bebeu cacha\xE7a \u{1F37A}",
         "https://i.pinimg.com/736x/61/21/a3/6121a37eccc3782b993e8c95aea1316c.jpg"
@@ -114,9 +107,6 @@
           break;
       }
     }
-    // ===============================
-    // GRITO DO ROCK
-    // ===============================
     gritoDoRock(alvo) {
       const dano = this.gerarataque() + 40;
       this.log(
@@ -127,9 +117,6 @@
         "imgjogadorum"
       );
     }
-    // ===============================
-    // ARROCHA
-    // ===============================
     musicaOfensiva(alvo) {
       const dano = this.gerarataque() + 30;
       this.log(
@@ -140,9 +127,6 @@
         "imgjogadorum"
       );
     }
-    // ===============================
-    // SOLO LENDÁRIO
-    // ===============================
     soloLendario(alvo) {
       if (this.alcool < 100) {
         this.log(
@@ -160,9 +144,6 @@
         "imgjogadorum"
       );
     }
-    // ===============================
-    // CURA
-    // ===============================
     curar() {
       const cura = 16;
       this.hp += cura;
@@ -180,9 +161,6 @@
         `${this.nome} ganhou +25 \xC1lcool \u{1F37B}`
       );
     }
-    // ===============================
-    // EFEITO VISUAL
-    // ===============================
     efeitoDano(id) {
       const imagem = document.getElementById(
         id
@@ -200,27 +178,18 @@
 
   // src/mago.ts
   var Mago = class extends personagem {
-    // ======================================
-    // CONSTRUTOR
-    // ======================================
     constructor(nome, forca, hp, defesa) {
       super(
         nome,
         forca,
         hp,
-        85,
+        400,
         defesa,
         "usou magia de cura \u2728",
         "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6j1gF2M3PjQocC3z5vn6DBRsDXz1BSBlIpg&s"
       );
-      // ======================================
-      // ATRIBUTO
-      // ======================================
       this.mana = 0;
     }
-    // ======================================
-    // ATAQUES
-    // ======================================
     atacar(alvo, ataque) {
       switch (ataque) {
         case 0:
@@ -237,9 +206,6 @@
           break;
       }
     }
-    // ======================================
-    // BOLA DE FOGO
-    // ======================================
     bolaDeFogo(alvo) {
       const dano = this.gerarataque() + 30;
       this.log(
@@ -250,9 +216,6 @@
         "imgjogadordois"
       );
     }
-    // ======================================
-    // MACUMBA
-    // ======================================
     macumba(alvo) {
       const dano = this.gerarataque() + 25;
       this.log(
@@ -263,9 +226,6 @@
         "imgjogadordois"
       );
     }
-    // ======================================
-    // METEORO
-    // ======================================
     meteoro(alvo) {
       if (this.mana < 100) {
         this.log(
@@ -283,9 +243,6 @@
         "imgjogadordois"
       );
     }
-    // ======================================
-    // CURA
-    // ======================================
     curar() {
       const valorCura = 24;
       this.hp += valorCura;
@@ -300,9 +257,6 @@
         `${this.nome} bebeu Guaraviton \u{1F9EA}`
       );
     }
-    // ======================================
-    // EFEITO VISUAL
-    // ======================================
     efeitoDano(idImagem) {
       const imagem = document.getElementById(
         idImagem
@@ -319,119 +273,214 @@
   };
 
   // src/jogo.ts
-  var mago = new Mago("Mago", 46, 85, 20);
-  var bardo = new Bardo("Bardo", 40, 100, 30);
-  var turnoAtual = 0;
-  var textoVidaMago = document.getElementById("hp1");
-  var barraVidaMago = document.getElementById("vida1");
-  var textoVidaBardo = document.getElementById("hp2");
-  var barraVidaBardo = document.getElementById("vida2");
-  var barraManaMago = document.getElementById("manaMago");
-  var textoManaMago = document.getElementById("manaTexto");
-  var barraAlcoolBardo = document.getElementById("alcoolBardo");
-  var textoAlcoolBardo = document.getElementById("alcoolTexto");
-  var botaoUltimateMago = document.getElementById("ultiMago");
-  var botaoUltimateBardo = document.getElementById("ultiBardo");
-  var botaoResetar = document.getElementById("resetarBatalha");
-  var areaAcoesMago = document.getElementById("acoesMago");
-  var areaAcoesBardo = document.getElementById("acoesBardo");
-  var imagemMago = document.getElementById("imgjogadorum");
-  var imagemBardo = document.getElementById("imgjogadordois");
-  var consoleBatalha = document.getElementById("console");
-  function flashAnime() {
-    const flash = document.getElementById("flash");
-    flash.style.opacity = "1";
-    setTimeout(() => {
-      flash.style.opacity = "0";
-    }, 120);
+  function pegarElemento(id) {
+    return document.getElementById(id);
   }
-  function criarExplosaoBardo() {
-    const bardoEl = document.getElementById("cardBardo");
-    const explosao = document.createElement("div");
-    explosao.classList.add("explosao");
-    explosao.style.left = "50%";
-    explosao.style.top = "50%";
-    explosao.style.transform = "translate(-50%, -50%)";
-    bardoEl.style.position = "relative";
-    explosao.style.position = "absolute";
-    bardoEl.appendChild(explosao);
-    setTimeout(() => explosao.remove(), 600);
-  }
-  function criarMiniMeteoroNoBardo() {
-    const bardoEl = document.getElementById("cardBardo");
-    const meteoro = document.createElement("div");
-    meteoro.classList.add("mini-meteoro");
-    meteoro.style.left = "50%";
-    meteoro.style.top = "-30px";
-    meteoro.style.transform = "translateX(-50%)";
-    bardoEl.style.position = "relative";
-    meteoro.style.position = "absolute";
-    bardoEl.appendChild(meteoro);
-    setTimeout(() => meteoro.remove(), 600);
-  }
-  function shakeTela() {
-    document.body.classList.add("shake");
-    setTimeout(() => {
-      document.body.classList.remove("shake");
-    }, 300);
-  }
-  function atualizarTela() {
-    textoVidaMago.innerHTML = `${mago.getvida().toFixed(2)} / ${mago.getvidaMax().toFixed(2)}`;
-    barraVidaMago.style.width = `${mago.getvidaPercentual()}%`;
-    textoVidaBardo.innerHTML = `${bardo.getvida().toFixed(2)} / ${bardo.getvidaMax().toFixed(2)}`;
-    barraVidaBardo.style.width = `${bardo.getvidaPercentual()}%`;
-    barraManaMago.style.width = `${mago.mana}%`;
-    textoManaMago.innerHTML = `${mago.mana}/100`;
-    barraAlcoolBardo.style.width = `${bardo.alcool}%`;
-    textoAlcoolBardo.innerHTML = `${bardo.alcool}/100`;
-    botaoUltimateMago.disabled = mago.mana < 100;
-    botaoUltimateBardo.disabled = bardo.alcool < 100;
-    const turnoDoMago = turnoAtual % 2 === 0;
-    if (turnoDoMago) {
-      areaAcoesMago.classList.remove("bloqueado");
-      areaAcoesBardo.classList.add("bloqueado");
-    } else {
-      areaAcoesBardo.classList.remove("bloqueado");
-      areaAcoesMago.classList.add("bloqueado");
+  var Game = class {
+    constructor() {
+      this.mago = new Mago("Mago", 46, 400, 20);
+      this.bardo = new Bardo("Bardo", 40, 500, 30);
+      this.turnoAtual = 0;
+      this.textoVidaMago = pegarElemento("hp1");
+      this.barraVidaMago = pegarElemento("vida1");
+      this.textoVidaBardo = pegarElemento("hp2");
+      this.barraVidaBardo = pegarElemento("vida2");
+      this.barraManaMago = pegarElemento("manaMago");
+      this.textoManaMago = pegarElemento("manaTexto");
+      this.barraAlcoolBardo = pegarElemento("alcoolBardo");
+      this.textoAlcoolBardo = pegarElemento("alcoolTexto");
+      this.botaoUltimateMago = pegarElemento("ultiMago");
+      this.botaoUltimateBardo = pegarElemento("ultiBardo");
+      this.areaAcoesMago = pegarElemento("acoesMago");
+      this.areaAcoesBardo = pegarElemento("acoesBardo");
+      this.imagemMago = pegarElemento("imgjogadorum");
+      this.imagemBardo = pegarElemento("imgjogadordois");
+      this.consoleBatalha = pegarElemento("console");
+      this.iniciar();
     }
-  }
-  function executarTurno(ataque, jogador) {
-    if (!mago.isvivo() || !bardo.isvivo()) return;
-    if (jogador === 1 && ataque === 3) {
-      criarMiniMeteoroNoBardo();
-      flashAnime();
-      shakeTela();
+    iniciar() {
+      this.imagemMago.src = this.mago.getimage();
+      this.imagemBardo.src = this.bardo.getimage();
+      pegarElemento(
+        "resetarBatalha"
+      ).addEventListener(
+        "click",
+        () => this.resetarBatalha()
+      );
+      this.atualizarTela();
+    }
+    atualizarVida(personagem2, barra, texto) {
+      barra.style.width = `${personagem2.getvidaPercentual()}%`;
+      texto.innerHTML = `${personagem2.getvida().toFixed(0)} / ${personagem2.getvidaMax().toFixed(0)}`;
+    }
+    atualizarTela() {
+      this.atualizarVida(
+        this.mago,
+        this.barraVidaMago,
+        this.textoVidaMago
+      );
+      this.atualizarVida(
+        this.bardo,
+        this.barraVidaBardo,
+        this.textoVidaBardo
+      );
+      this.barraManaMago.style.width = `${this.mago.mana}%`;
+      this.textoManaMago.innerHTML = `${this.mago.mana}/100`;
+      this.barraAlcoolBardo.style.width = `${this.bardo.alcool}%`;
+      this.textoAlcoolBardo.innerHTML = `${this.bardo.alcool}/100`;
+      this.botaoUltimateMago.disabled = this.mago.mana < 100;
+      this.botaoUltimateBardo.disabled = this.bardo.alcool < 100;
+      const turnoDoMago = this.turnoAtual % 2 === 0;
+      if (turnoDoMago) {
+        this.areaAcoesMago.classList.remove(
+          "bloqueado"
+        );
+        this.areaAcoesBardo.classList.add(
+          "bloqueado"
+        );
+      } else {
+        this.areaAcoesBardo.classList.remove(
+          "bloqueado"
+        );
+        this.areaAcoesMago.classList.add(
+          "bloqueado"
+        );
+      }
+    }
+    flashAnime() {
+      const flash = pegarElemento("flash");
+      flash.style.opacity = "1";
       setTimeout(() => {
-        criarExplosaoBardo();
-      }, 400);
+        flash.style.opacity = "0";
+      }, 120);
     }
-    if (turnoAtual % 2 == 0 && jogador == 1) {
-      mago.atacar(bardo, ataque);
-      turnoAtual++;
-    } else if (turnoAtual % 2 == 1 && jogador == 2) {
-      bardo.atacar(mago, ataque);
-      turnoAtual++;
+    shakeTela() {
+      document.body.classList.add(
+        "shake"
+      );
+      setTimeout(() => {
+        document.body.classList.remove(
+          "shake"
+        );
+      }, 300);
     }
-    atualizarTela();
-    verificarVencedor();
-  }
-  function verificarVencedor() {
-    if (!mago.isvivo()) mago.log("\u{1F3B8} Bardo venceu!");
-    if (!bardo.isvivo()) mago.log("\u{1F525} Mago venceu!");
-  }
-  function resetarBatalha() {
-    turnoAtual = 0;
-    mago = new Mago("Mago", 46, 85, 20);
-    bardo = new Bardo("Bardo", 40, 100, 30);
-    imagemMago.src = mago.getimage();
-    imagemBardo.src = bardo.getimage();
-    consoleBatalha.innerHTML = "<p>\u2694\uFE0F Nova batalha iniciada!</p>";
-    atualizarTela();
-  }
-  botaoResetar.addEventListener("click", resetarBatalha);
-  imagemMago.src = mago.getimage();
-  imagemBardo.src = bardo.getimage();
-  atualizarTela();
-  window.ataqueMago = (a) => executarTurno(a, 1);
-  window.ataqueBardo = (a) => executarTurno(a, 2);
+    criarMiniMeteoro() {
+      const alvo = pegarElemento(
+        "cardBardo"
+      );
+      alvo.style.position = "relative";
+      const meteoro = document.createElement("div");
+      meteoro.classList.add(
+        "mini-meteoro"
+      );
+      alvo.appendChild(
+        meteoro
+      );
+      setTimeout(() => {
+        meteoro.remove();
+      }, 600);
+    }
+    criarExplosaoBardo() {
+      const bardoEl = pegarElemento(
+        "cardBardo"
+      );
+      bardoEl.style.position = "relative";
+      const explosao = document.createElement("div");
+      explosao.classList.add(
+        "explosao"
+      );
+      bardoEl.appendChild(
+        explosao
+      );
+      setTimeout(() => {
+        explosao.remove();
+      }, 600);
+    }
+    criarOndaSonora() {
+      const bardoEl = pegarElemento(
+        "cardBardo"
+      );
+      bardoEl.style.position = "relative";
+      const onda = document.createElement("div");
+      onda.classList.add(
+        "onda-sonora"
+      );
+      bardoEl.appendChild(
+        onda
+      );
+      bardoEl.classList.add(
+        "neon-bardo"
+      );
+      setTimeout(() => {
+        onda.remove();
+        bardoEl.classList.remove(
+          "neon-bardo"
+        );
+      }, 800);
+    }
+    executarTurno(ataque, jogador) {
+      if (!this.mago.isvivo() || !this.bardo.isvivo()) return;
+      if (jogador === 1 && ataque === 3 /* Meteoro */) {
+        this.flashAnime();
+        this.shakeTela();
+        this.criarMiniMeteoro();
+        setTimeout(() => {
+          this.criarExplosaoBardo();
+        }, 400);
+      }
+      if (jogador === 2 && ataque === 3 /* Solo */) {
+        this.criarOndaSonora();
+        this.shakeTela();
+      }
+      if (this.turnoAtual % 2 === 0 && jogador === 1) {
+        this.mago.atacar(
+          this.bardo,
+          ataque
+        );
+        this.turnoAtual++;
+      } else if (this.turnoAtual % 2 === 1 && jogador === 2) {
+        this.bardo.atacar(
+          this.mago,
+          ataque
+        );
+        this.turnoAtual++;
+      }
+      this.atualizarTela();
+      this.verificarVencedor();
+    }
+    verificarVencedor() {
+      if (!this.mago.isvivo()) {
+        this.mago.log(
+          "\u{1F3B8} Bardo venceu!"
+        );
+      }
+      if (!this.bardo.isvivo()) {
+        this.mago.log(
+          "\u{1F525} Mago venceu!"
+        );
+      }
+    }
+    resetarBatalha() {
+      this.turnoAtual = 0;
+      this.mago = new Mago(
+        "Mago",
+        46,
+        400,
+        20
+      );
+      this.bardo = new Bardo(
+        "Bardo",
+        40,
+        500,
+        30
+      );
+      this.imagemMago.src = this.mago.getimage();
+      this.imagemBardo.src = this.bardo.getimage();
+      this.consoleBatalha.innerHTML = "<p>\u2694\uFE0F Nova batalha iniciada!</p>";
+      this.atualizarTela();
+    }
+  };
+  var game = new Game();
+  window.ataqueMago = (a) => game.executarTurno(a, 1);
+  window.ataqueBardo = (a) => game.executarTurno(a, 2);
 })();

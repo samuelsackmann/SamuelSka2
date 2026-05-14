@@ -2,15 +2,7 @@ import { personagem } from "./personagem";
 
 export class Mago extends personagem {
 
-  // ======================================
-  // ATRIBUTO
-  // ======================================
-
   public mana: number = 0;
-
-  // ======================================
-  // CONSTRUTOR
-  // ======================================
 
   constructor(
     nome: string,
@@ -23,17 +15,13 @@ export class Mago extends personagem {
       nome,
       forca,
       hp,
-      85,
+      400,
       defesa,
       "usou magia de cura ✨",
       "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6j1gF2M3PjQocC3z5vn6DBRsDXz1BSBlIpg&s"
     );
 
   }
-
-  // ======================================
-  // ATAQUES
-  // ======================================
 
   atacar(
     alvo: personagem,
@@ -43,36 +31,24 @@ export class Mago extends personagem {
     switch (ataque) {
 
       case 0:
-
         this.bolaDeFogo(alvo);
-
       break;
 
       case 1:
-
         this.macumba(alvo);
-
       break;
 
       case 2:
-
         this.curar();
-
       break;
 
       case 3:
-
         this.meteoro(alvo);
-
       break;
 
     }
 
   }
-
-  // ======================================
-  // BOLA DE FOGO
-  // ======================================
 
   public bolaDeFogo(
     alvo: personagem
@@ -93,10 +69,6 @@ export class Mago extends personagem {
 
   }
 
-  // ======================================
-  // MACUMBA
-  // ======================================
-
   public macumba(
     alvo: personagem
   ): void {
@@ -116,10 +88,6 @@ export class Mago extends personagem {
 
   }
 
-  // ======================================
-  // METEORO
-  // ======================================
-
   public meteoro(
     alvo: personagem
   ): void {
@@ -134,7 +102,7 @@ export class Mago extends personagem {
 
     }
 
-    this.mana = 100;
+    this.mana = 0;
 
     const dano =
     this.gerarataque() + 80;
@@ -150,10 +118,6 @@ export class Mago extends personagem {
     );
 
   }
-
-  // ======================================
-  // CURA
-  // ======================================
 
   override curar(): void {
 
@@ -180,10 +144,6 @@ export class Mago extends personagem {
     );
 
   }
-
-  // ======================================
-  // EFEITO VISUAL
-  // ======================================
 
   public efeitoDano(
     idImagem: string

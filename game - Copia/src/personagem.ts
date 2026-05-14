@@ -1,26 +1,18 @@
 export abstract class personagem {
 
-  // ======================================
-  // ATRIBUTOS
-  // ======================================
-
   public nome: string;
 
   protected forca: number;
 
   protected hp: number;
 
-  protected hpMax: number;
+  protected readonly hpMax: number;
 
   protected defesa: number;
 
   protected msgCura: string;
 
   protected imagem: string;
-
-  // ======================================
-  // CONSTRUTOR
-  // ======================================
 
   constructor(
     nome: string,
@@ -49,10 +41,6 @@ export abstract class personagem {
 
   }
 
-  // ======================================
-  // GETTERS
-  // ======================================
-
   public getvida(): number {
 
     return this.hp;
@@ -80,10 +68,6 @@ export abstract class personagem {
 
   }
 
-  // ======================================
-  // SISTEMA DE ATAQUE
-  // ======================================
-
   public gerarataque(): number {
 
     return Math.floor(
@@ -92,19 +76,11 @@ export abstract class personagem {
 
   }
 
-  // ======================================
-  // STATUS
-  // ======================================
-
   public isvivo(): boolean {
 
     return this.hp > 0;
 
   }
-
-  // ======================================
-  // DANO
-  // ======================================
 
   public sofrerDano(
     dano: number
@@ -138,10 +114,6 @@ export abstract class personagem {
 
   }
 
-  // ======================================
-  // CURA
-  // ======================================
-
   public curar(): void {
 
     const valorCura = 30;
@@ -160,9 +132,28 @@ export abstract class personagem {
 
   }
 
-  // ======================================
-  // LOG
-  // ======================================
+  public efeitoDano(
+    id: string
+  ): void {
+
+    const imagem =
+    document.getElementById(
+      id
+    ) as HTMLElement;
+
+    imagem.classList.add(
+      "hit"
+    );
+
+    setTimeout(() => {
+
+      imagem.classList.remove(
+        "hit"
+      );
+
+    }, 300);
+
+  }
 
   public log(
     mensagem: string
@@ -176,11 +167,10 @@ export abstract class personagem {
     consoleHTML.innerHTML +=
     `<p>${mensagem}</p>`;
 
-  }
+    consoleHTML.scrollTop =
+    consoleHTML.scrollHeight;
 
-  // ======================================
-  // MÉTODO ABSTRATO
-  // ======================================
+  }
 
   abstract atacar(
     alvo: personagem,
