@@ -12,440 +12,237 @@ enum AtaqueMago {
 enum AtaqueBardo {
   GritoRock,
   Cachaca,
- Arrocha,
+  Arrocha,
   Solo
 }
 
-function pegarElemento<T extends HTMLElement>(
-  id: string
-): T {
-
+function pegarElemento<T extends HTMLElement>(id: string): T {
   return document.getElementById(id) as T;
-
 }
 
 class Game {
 
-  private mago =
-  new Mago("Mago", 46, 400, 20);
-
-  private bardo =
-  new Bardo("Bardo", 40, 500, 30);
+  private mago = new Mago("Mago", 46, 400, 20);
+  private bardo = new Bardo("Bardo", 40, 500, 30);
 
   private turnoAtual = 0;
+  private jogoFinalizado = false;
 
-  private textoVidaMago =
-  pegarElemento<HTMLElement>("hp1");
+  private textoVidaMago = pegarElemento<HTMLElement>("hp1");
+  private barraVidaMago = pegarElemento<HTMLElement>("vida1");
 
-  private barraVidaMago =
-  pegarElemento<HTMLElement>("vida1");
+  private textoVidaBardo = pegarElemento<HTMLElement>("hp2");
+  private barraVidaBardo = pegarElemento<HTMLElement>("vida2");
 
-  private textoVidaBardo =
-  pegarElemento<HTMLElement>("hp2");
+  private barraManaMago = pegarElemento<HTMLElement>("manaMago");
+  private textoManaMago = pegarElemento<HTMLElement>("manaTexto");
 
-  private barraVidaBardo =
-  pegarElemento<HTMLElement>("vida2");
+  private barraAlcoolBardo = pegarElemento<HTMLElement>("alcoolBardo");
+  private textoAlcoolBardo = pegarElemento<HTMLElement>("alcoolTexto");
 
-  private barraManaMago =
-  pegarElemento<HTMLElement>("manaMago");
+  private botaoUltimateMago = pegarElemento<HTMLButtonElement>("ultiMago");
+  private botaoUltimateBardo = pegarElemento<HTMLButtonElement>("ultiBardo");
 
-  private textoManaMago =
-  pegarElemento<HTMLElement>("manaTexto");
+  private areaAcoesMago = pegarElemento<HTMLElement>("acoesMago");
+  private areaAcoesBardo = pegarElemento<HTMLElement>("acoesBardo");
 
-  private barraAlcoolBardo =
-  pegarElemento<HTMLElement>("alcoolBardo");
+  private imagemMago = pegarElemento<HTMLImageElement>("imgjogadorum");
+  private imagemBardo = pegarElemento<HTMLImageElement>("imgjogadordois");
 
-  private textoAlcoolBardo =
-  pegarElemento<HTMLElement>("alcoolTexto");
-
-  private botaoUltimateMago =
-  pegarElemento<HTMLButtonElement>("ultiMago");
-
-  private botaoUltimateBardo =
-  pegarElemento<HTMLButtonElement>("ultiBardo");
-
-  private areaAcoesMago =
-  pegarElemento<HTMLElement>("acoesMago");
-
-  private areaAcoesBardo =
-  pegarElemento<HTMLElement>("acoesBardo");
-
-  private imagemMago =
-  pegarElemento<HTMLImageElement>("imgjogadorum");
-
-  private imagemBardo =
-  pegarElemento<HTMLImageElement>("imgjogadordois");
-
-  private consoleBatalha =
-  pegarElemento<HTMLElement>("console");
+  private consoleBatalha = pegarElemento<HTMLElement>("console");
 
   constructor() {
-
     this.iniciar();
-
   }
 
   iniciar(): void {
 
-    this.imagemMago.src =
-    this.mago.getimage();
+    this.imagemMago.src = this.mago.getimage();
+    this.imagemBardo.src = this.bardo.getimage();
 
-    this.imagemBardo.src =
-    this.bardo.getimage();
-
-    pegarElemento<HTMLButtonElement>(
-      "resetarBatalha"
-    ).addEventListener(
-      "click",
-      () => this.resetarBatalha()
-    );
+    pegarElemento<HTMLButtonElement>("resetarBatalha")
+      .addEventListener("click", () => this.resetarBatalha());
 
     this.atualizarTela();
-
   }
 
-  atualizarVida(
-    personagem: personagem,
-    barra: HTMLElement,
-    texto: HTMLElement
-  ): void {
-
-    barra.style.width =
-    `${personagem.getvidaPercentual()}%`;
-
-    texto.innerHTML =
-    `${personagem.getvida().toFixed(0)} / ${personagem.getvidaMax().toFixed(0)}`;
-
+  atualizarVida(personagem: personagem, barra: HTMLElement, texto: HTMLElement): void {
+    barra.style.width = `${personagem.getvidaPercentual()}%`;
+    texto.innerHTML = `${personagem.getvida().toFixed(0)} / ${personagem.getvidaMax().toFixed(0)}`;
   }
 
   atualizarTela(): void {
 
-    this.atualizarVida(
-      this.mago,
-      this.barraVidaMago,
-      this.textoVidaMago
-    );
+    this.atualizarVida(this.mago, this.barraVidaMago, this.textoVidaMago);
+    this.atualizarVida(this.bardo, this.barraVidaBardo, this.textoVidaBardo);
 
-    this.atualizarVida(
-      this.bardo,
-      this.barraVidaBardo,
-      this.textoVidaBardo
-    );
+    this.barraManaMago.style.width = `${this.mago.mana}%`;
+    this.textoManaMago.innerHTML = `${this.mago.mana}/100`;
 
-    this.barraManaMago.style.width =
-    `${this.mago.mana}%`;
+    this.barraAlcoolBardo.style.width = `${this.bardo.alcool}%`;
+    this.textoAlcoolBardo.innerHTML = `${this.bardo.alcool}/100`;
 
-    this.textoManaMago.innerHTML =
-    `${this.mago.mana}/100`;
+    this.botaoUltimateMago.disabled = this.mago.mana < 100;
+    this.botaoUltimateBardo.disabled = this.bardo.alcool < 100;
 
-    this.barraAlcoolBardo.style.width =
-    `${this.bardo.alcool}%`;
-
-    this.textoAlcoolBardo.innerHTML =
-    `${this.bardo.alcool}/100`;
-
-    this.botaoUltimateMago.disabled =
-    this.mago.mana < 100;
-
-    this.botaoUltimateBardo.disabled =
-    this.bardo.alcool < 100;
-
-    const turnoDoMago =
-    this.turnoAtual % 2 === 0;
+    const turnoDoMago = this.turnoAtual % 2 === 0;
 
     if (turnoDoMago) {
-
-      this.areaAcoesMago.classList.remove(
-        "bloqueado"
-      );
-
-      this.areaAcoesBardo.classList.add(
-        "bloqueado"
-      );
-
+      this.areaAcoesMago.classList.remove("bloqueado");
+      this.areaAcoesBardo.classList.add("bloqueado");
     } else {
-
-      this.areaAcoesBardo.classList.remove(
-        "bloqueado"
-      );
-
-      this.areaAcoesMago.classList.add(
-        "bloqueado"
-      );
-
+      this.areaAcoesBardo.classList.remove("bloqueado");
+      this.areaAcoesMago.classList.add("bloqueado");
     }
-
   }
 
   flashAnime(): void {
-
-    const flash =
-    pegarElemento<HTMLElement>("flash");
+    const flash = pegarElemento<HTMLElement>("flash");
 
     flash.style.opacity = "1";
 
     setTimeout(() => {
-
       flash.style.opacity = "0";
-
     }, 120);
-
   }
 
   shakeTela(): void {
-
-    document.body.classList.add(
-      "shake"
-    );
+    document.body.classList.add("shake");
 
     setTimeout(() => {
-
-      document.body.classList.remove(
-        "shake"
-      );
-
+      document.body.classList.remove("shake");
     }, 300);
-
   }
 
   criarMiniMeteoro(): void {
+    const alvo = pegarElemento<HTMLElement>("cardBardo");
 
-    const alvo =
-    pegarElemento<HTMLElement>(
-      "cardBardo"
-    );
+    alvo.style.position = "relative";
 
-    alvo.style.position =
-    "relative";
+    const meteoro = document.createElement("div");
+    meteoro.classList.add("mini-meteoro");
 
-    const meteoro =
-    document.createElement("div");
+    alvo.appendChild(meteoro);
 
-    meteoro.classList.add(
-      "mini-meteoro"
-    );
-
-    alvo.appendChild(
-      meteoro
-    );
-
-    setTimeout(() => {
-
-      meteoro.remove();
-
-    }, 600);
-
+    setTimeout(() => meteoro.remove(), 600);
   }
 
   criarExplosaoBardo(): void {
+    const bardoEl = pegarElemento<HTMLElement>("cardBardo");
 
-    const bardoEl =
-    pegarElemento<HTMLElement>(
-      "cardBardo"
-    );
+    bardoEl.style.position = "relative";
 
-    bardoEl.style.position =
-    "relative";
+    const explosao = document.createElement("div");
+    explosao.classList.add("explosao");
 
-    const explosao =
-    document.createElement("div");
+    bardoEl.appendChild(explosao);
 
-    explosao.classList.add(
-      "explosao"
-    );
-
-    bardoEl.appendChild(
-      explosao
-    );
-
-    setTimeout(() => {
-
-      explosao.remove();
-
-    }, 600);
-
+    setTimeout(() => explosao.remove(), 600);
   }
 
   criarOndaSonora(): void {
+    const bardoEl = pegarElemento<HTMLElement>("cardBardo");
 
-    const bardoEl =
-    pegarElemento<HTMLElement>(
-      "cardBardo"
-    );
+    bardoEl.style.position = "relative";
 
-    bardoEl.style.position =
-    "relative";
+    const onda = document.createElement("div");
+    onda.classList.add("onda-sonora");
 
-    const onda =
-    document.createElement("div");
-
-    onda.classList.add(
-      "onda-sonora"
-    );
-
-    bardoEl.appendChild(
-      onda
-    );
-
-    bardoEl.classList.add(
-      "neon-bardo"
-    );
+    bardoEl.appendChild(onda);
+    bardoEl.classList.add("neon-bardo");
 
     setTimeout(() => {
-
       onda.remove();
-
-      bardoEl.classList.remove(
-        "neon-bardo"
-      );
-
+      bardoEl.classList.remove("neon-bardo");
     }, 800);
-
   }
 
-  executarTurno(
-    ataque: number,
-    jogador: number
-  ): void {
+  executarTurno(ataque: number, jogador: number): void {
 
-    if (
-      !this.mago.isvivo() ||
-      !this.bardo.isvivo()
-    ) return;
+    if (this.jogoFinalizado) return;
 
-    if (
-      jogador === 1 &&
-      ataque === AtaqueMago.Meteoro
-    ) {
+    if (!this.mago.isvivo() || !this.bardo.isvivo()) return;
 
+    if (jogador === 1 && ataque === AtaqueMago.Meteoro) {
       this.flashAnime();
-
       this.shakeTela();
-
       this.criarMiniMeteoro();
 
       setTimeout(() => {
-
         this.criarExplosaoBardo();
-
       }, 400);
-
     }
 
-    if (
-    jogador === 2 &&
-  ataque === AtaqueBardo.Solo
-    ) {
-
+    if (jogador === 2 && ataque === AtaqueBardo.Solo) {
       this.criarOndaSonora();
       this.shakeTela();
     }
 
-    if (
-      this.turnoAtual % 2 === 0 &&
-      jogador === 1
-    ) {
-
-      this.mago.atacar(
-        this.bardo,
-        ataque
-      );
-
+    if (this.turnoAtual % 2 === 0 && jogador === 1) {
+      this.mago.atacar(this.bardo, ataque);
       this.turnoAtual++;
-
-    } else if (
-      this.turnoAtual % 2 === 1 &&
-      jogador === 2
-    ) {
-
-      this.bardo.atacar(
-        this.mago,
-        ataque
-      );
-
+    } else if (this.turnoAtual % 2 === 1 && jogador === 2) {
+      this.bardo.atacar(this.mago, ataque);
       this.turnoAtual++;
-
     }
 
     this.atualizarTela();
-
     this.verificarVencedor();
-
   }
 
-  verificarVencedor(): void {
+verificarVencedor(): void {
 
-    if (!this.mago.isvivo()) {
+  if (this.jogoFinalizado) return;
 
-      this.mago.log(
-        "🎸 Bardo venceu!"
-      );
+  if (this.mago.isvivo() && this.bardo.isvivo()) return;
 
-    }
+  this.jogoFinalizado = true;
 
-    else {
+  const vencedor = this.mago.isvivo() ? "Mago" : "Bardo";
 
-      this.mago.log(
-        "🔥 Mago venceu!"
-      );
+  this.mostrarVencedor(vencedor);
+}
 
-    }
+  mostrarVencedor(nome: string): void {
 
+    this.consoleBatalha.innerHTML = "";
+
+    const msg = document.createElement("p");
+
+    msg.textContent = `${nome} VENCEU!`;
+    msg.style.color = "yellow";
+    msg.style.fontSize = "28px";
+    msg.style.fontWeight = "bold";
+    msg.style.textAlign = "center";
+
+    this.consoleBatalha.appendChild(msg);
   }
 
   resetarBatalha(): void {
 
     this.turnoAtual = 0;
+    this.jogoFinalizado = false;
 
-    this.mago =
-    new Mago(
-      "Mago",
-      46,
-      400,
-      20
-    );
+    this.mago = new Mago("Mago", 46, 400, 20);
+    this.bardo = new Bardo("Bardo", 40, 500, 30);
 
-    this.bardo =
-    new Bardo(
-      "Bardo",
-      40,
-      500,
-      30
-    );
+    this.imagemMago.src = this.mago.getimage();
+    this.imagemBardo.src = this.bardo.getimage();
 
-    this.imagemMago.src =
-    this.mago.getimage();
-
-    this.imagemBardo.src =
-    this.bardo.getimage();
-
-    this.consoleBatalha.innerHTML =
-    "<p>⚔️ Nova batalha iniciada!</p>";
+    this.consoleBatalha.innerHTML = "<p>⚔️ Nova batalha iniciada!</p>";
 
     this.atualizarTela();
-
   }
-
 }
 
 const game = new Game();
 
 declare global {
-
   interface Window {
-
     ataqueMago: Function;
-
     ataqueBardo: Function;
-
   }
-
 }
 
-window.ataqueMago =
-(a: number) =>
-game.executarTurno(a, 1);
-
-window.ataqueBardo =
-(a: number) =>
-game.executarTurno(a, 2);
+window.ataqueMago = (a: number) => game.executarTurno(a, 1);
+window.ataqueBardo = (a: number) => game.executarTurno(a, 2);

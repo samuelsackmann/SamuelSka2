@@ -17,7 +17,7 @@ export class Bardo extends personagem {
       500,
       defesa,
       "bebeu cachaça 🍺",
-      "https://i.pinimg.com/736x/61/21/a3/6121a37eccc3782b993e8c95aea1316c.jpg"
+      "https://endless-coffee-3qom2hwieb.edgeone.app/411e2248-945e-4663-b5e5-15b1d0b4b0e5_rotated-removebg-preview.png"
     );
   }
 
@@ -53,7 +53,7 @@ export class Bardo extends personagem {
   ): void {
 
     const dano =
-    this.gerarataque() + 40;
+    this.gerarataque() + 50;
 
     this.log(
       `${this.nome} soltou um Grito do Rock 🤘`
@@ -72,7 +72,7 @@ export class Bardo extends personagem {
   ): void {
 
     const dano =
-    this.gerarataque() + 30;
+    this.gerarataque() + 40;
 
     this.log(
       `${this.nome} usou Arrocha 🔊`
@@ -103,7 +103,7 @@ export class Bardo extends personagem {
     this.alcool = 0;
 
     const dano =
-    this.gerarataque() + 80;
+    this.gerarataque() + 90;
 
     this.log(
       `🎸 SOLO LENDÁRIO 🎸`

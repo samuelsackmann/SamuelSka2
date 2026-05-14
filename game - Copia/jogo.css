@@ -27,7 +27,8 @@ body{
     background:
     radial-gradient(
       circle at center,
-      #222230 0%,
+      #4242fd 0%,
+      #0000ac 50%,
       #0d0d12 100%
     );
   }
@@ -36,7 +37,8 @@ body{
     background:
     radial-gradient(
       circle at center,
-      #2b1b35 0%,
+      #b133ff 0%,
+      #5a0191 0%,
       #09090f 100%
     );
   }
@@ -175,7 +177,7 @@ button:disabled{
 
   border-radius:12px;
 
-  border:3px solid #2b0031;
+  border:3px solid #f7bdff;
 
   margin-bottom:15px;
 
@@ -602,6 +604,31 @@ button:disabled{
 
   }
 
+}
+.vitoria-texto{
+  position:absolute;
+  top:-10px;
+  left:50%;
+  transform:translateX(-50%);
+  
+  font-size:50px;
+  font-weight:bold;
+  color:#ffd000;
+  text-shadow:0 0 20px black, 0 0 10px #6e5500;
+  z-index: 10;
+  animation: subir 0.6s ease-out;
+  pointer-events:none;
+}
+
+@keyframes subir{
+  from{
+    opacity:0;
+    transform:translateX(-50%) translateY(20px);
+  }
+  to{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+  }
 }
 .onda-sonora{
 

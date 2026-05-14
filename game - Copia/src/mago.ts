@@ -18,7 +18,7 @@ export class Mago extends personagem {
       400,
       defesa,
       "usou magia de cura ✨",
-      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR6j1gF2M3PjQocC3z5vn6DBRsDXz1BSBlIpg&s"
+      "https://i.pinimg.com/originals/5c/d8/e6/5cd8e6db676d6299731c4477573b676b.gif"
     );
 
   }
@@ -55,7 +55,7 @@ export class Mago extends personagem {
   ): void {
 
     const dano =
-    this.gerarataque() + 30;
+    this.gerarataque() + 50;
 
     this.log(
       `${this.nome} lançou Bola de Fogo 🔥`
@@ -74,7 +74,7 @@ export class Mago extends personagem {
   ): void {
 
     const dano =
-    this.gerarataque() + 25;
+    this.gerarataque() + 40;
 
     this.log(
       `${this.nome} lançou Macumba ⚡`
@@ -105,7 +105,7 @@ export class Mago extends personagem {
     this.mana = 0;
 
     const dano =
-    this.gerarataque() + 80;
+    this.gerarataque() + 100;
 
     this.log(
       "☄️ METEORO ☄️"
@@ -121,7 +121,7 @@ export class Mago extends personagem {
 
   override curar(): void {
 
-    const valorCura = 24;
+    const valorCura = 25;
 
     this.hp += valorCura;
 

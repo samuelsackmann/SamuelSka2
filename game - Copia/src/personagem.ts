@@ -116,7 +116,7 @@ export abstract class personagem {
 
   public curar(): void {
 
-    const valorCura = 30;
+    const valorCura = 50;
 
     this.hp += valorCura;
 
